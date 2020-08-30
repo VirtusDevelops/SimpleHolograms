@@ -1,0 +1,12 @@
+name: ClickableHolosTest
+main: eu.virtusdevelops.clickableholostest.ClickableHolosTest
+version: "TEST"
+api-version: "1.16"
+
+depend:
+  - ProtocolLib
+
+commands:
+  simpleholograms:
+    description: "Main command"
+    permission: "simpleholograms.command.main"

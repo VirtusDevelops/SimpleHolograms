@@ -5,6 +5,7 @@ import eu.virtusdevelops.clickableholostest.commands.ReloadCommand
 import eu.virtusdevelops.clickableholostest.handlers.HologramRegistry
 import eu.virtusdevelops.clickableholostest.hologram.HologramStorage
 import eu.virtusdevelops.clickableholostest.listeners.PlayerJoinEvent
+import eu.virtusdevelops.clickableholostest.nms.HoloPacket
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderManager
 import eu.virtusdevelops.clickableholotest.example.ExamplePlaceholders
 import eu.virtusdevelops.virtuscore.VirtusCore
@@ -24,6 +25,7 @@ class ClickableHolosTest: JavaPlugin() {
     private lateinit var fileManager: FileManager
 
     override fun onEnable() {
+
 
         val pm = VirtusCore.plugins()
         fileManager = FileManager(this, linkedSetOf<FileLocation>(
@@ -52,7 +54,7 @@ class ClickableHolosTest: JavaPlugin() {
     fun startTask(){
         Bukkit.getScheduler().runTaskTimer(this, Runnable{
             hologramRegistry.update()
-        }, 0, 100L)
+        }, 0, 20L)
 
         /*Bukkit.getScheduler().runTaskTimer(this, Runnable{
             hologramRegistry.updatePlaceholders()

@@ -3,6 +3,7 @@ package eu.virtusdevelops.clickableholostest.hologram
 import eu.virtusdevelops.clickableholostest.ClickableHolosTest
 import eu.virtusdevelops.clickableholostest.handlers.HologramRegistry
 import eu.virtusdevelops.virtuscore.managers.FileManager
+import org.bukkit.Location
 
 class HologramStorage(private val plugin: ClickableHolosTest, private val fileManager: FileManager,
                         private val hologramRegistry: HologramRegistry){
@@ -11,7 +12,7 @@ class HologramStorage(private val plugin: ClickableHolosTest, private val fileMa
         val section = fileManager.getConfiguration("holograms").getConfigurationSection("") ?: return
 
         for(data in section.getKeys(false)){
-            val location = section.getLocation("$data.location")
+            val location = section.get("$data.location") as Location
 
             if(location != null) {
                 val template = HologramTemplate(

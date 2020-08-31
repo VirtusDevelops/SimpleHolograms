@@ -24,7 +24,7 @@ class PlaceholderRegistry{
                     return true
                 }
             }
-            return false;
+            return false
         }
     }
 }

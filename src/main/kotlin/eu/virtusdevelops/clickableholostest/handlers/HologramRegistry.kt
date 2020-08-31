@@ -38,9 +38,10 @@ class HologramRegistry {
     fun unregister(player: Player){
         val holograms = hologramsMap[player.uniqueId]
         if(holograms != null) {
-            for (hologram in holograms) {
-                hologram.destroy()
-                //holograms.remove(hologram)
+            val iter = holograms.iterator()
+            while(iter.hasNext()){
+                iter.next().destroy()
+                iter.remove()
             }
         }
         hologramsMap.remove(player.uniqueId)

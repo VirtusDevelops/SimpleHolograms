@@ -3,6 +3,7 @@ package eu.virtusdevelops.clickableholotest.hologram;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import eu.virtusdevelops.clickableholostest.hologram.PlaceholderLine;
+import eu.virtusdevelops.clickableholostest.nms.HoloPacket;
 import eu.virtusdevelops.clickableholostest.placeholder.Placeholder;
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderManager;
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry;
@@ -13,7 +14,7 @@ import eu.virtusdevelops.clickableholotest.packet.WrapperPlayServerEntityMetadat
 import eu.virtusdevelops.clickableholotest.packet.WrapperPlayServerSpawnEntity;
 import eu.virtusdevelops.virtuscore.utils.HexUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
+import net.minecraft.server.v1_16_R2.ChatComponentText;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -45,23 +46,20 @@ public class Hologram {
         this.location = location;
         this.distance = distance;
         this.player = player;
-
         for(String line : lines) {
             if (LineUtil.Companion.containsPlaceholders(line)){
                 containsPlaceholders = true;
                 break;
             }
         }
-
-
-
         construct();
     }
-
     public Hologram updateRange(int range){
         this.range = range;
         return this;
     }
+
+
 
     public void construct(){
         double y = location.getY();
@@ -70,22 +68,35 @@ public class Hologram {
         for(String line: lines){
             // Constructs line
             int id = random.nextInt();
-            WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity();
+
+
+            Location newLoc = location.clone();
+            newLoc.setY(y);
+            HoloPacket.Companion.getINSTANCE().spawnArmorStand(player, id, UUID.randomUUID(), newLoc);
+
+            /*WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity();
             packet.setEntityID(id);
             packet.setType(EntityType.ARMOR_STAND);
             packet.setX(location.getX());
             packet.setY(y);
             packet.setZ(location.getZ());
-            packet.setUniqueId(UUID.randomUUID());
+            packet.setUniqueId(UUID.randomUUID());*/
             y-=0.25;
-            packets.add(packet);
             ids.add(id);
 
+            HoloPacket.Companion.getINSTANCE().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line)));
+            if(LineUtil.Companion.containsPlaceholders(line)){
+                placeholderLines.add(new PlaceholderLine(line, id));
+            }
 
-            WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
+
+            /*WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
             metaPacket.setEntityID(id);
             WrappedDataWatcher dataWatcher = new WrappedDataWatcher(metaPacket.getMetadata());
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x20);
+
+
+
 
             if(LineUtil.Companion.containsPlaceholders(line)){
                 placeholderLines.add(new PlaceholderLine(line, id));
@@ -98,7 +109,7 @@ public class Hologram {
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true);
 
             metaPacket.setMetadata(dataWatcher.getWatchableObjects());
-            packets.add(metaPacket);
+            packets.add(metaPacket);*/
         }
 
         for(AbstractPacket packet : packets){
@@ -122,7 +133,10 @@ public class Hologram {
     private void update(){
         int line = 0;
         for(int id : ids){
-            WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
+
+            HoloPacket.Companion.getINSTANCE().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(lines.get(line))));
+
+            /*WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
             metaPacket.setEntityID(id);
             WrappedDataWatcher dataWatcher = new WrappedDataWatcher(metaPacket.getMetadata());
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x20);
@@ -133,7 +147,7 @@ public class Hologram {
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true);
 
             metaPacket.setMetadata(dataWatcher.getWatchableObjects());
-            metaPacket.sendPacket(player);
+            metaPacket.sendPacket(player);*/
             line++;
         }
     }
@@ -141,18 +155,20 @@ public class Hologram {
     public void tickPlaceholderLines(){
         if(isAlive) {
             for (PlaceholderLine line : placeholderLines) {
-                WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
+                HoloPacket.Companion.getINSTANCE().updateArmorStandDisplayName(player, line.getId(), HexUtil.colorify(parsePlaceholders(line.getLine())));
+                /*WrapperPlayServerEntityMetadata metaPacket = new WrapperPlayServerEntityMetadata();
                 metaPacket.setEntityID(line.getId());
                 WrappedDataWatcher dataWatcher = new WrappedDataWatcher(metaPacket.getMetadata());
                 dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x20);
-                Optional<?> opt = Optional
-                        .of(WrappedChatComponent
-                                .fromChatMessage(HexUtil.colorify(parsePlaceholders(line.getLine())))[0].getHandle());
-                dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+                Optional<?> opt = Optional.of(new ChatComponentText(HexUtil.colorify(parsePlaceholders(line.getLine()))));
+                        /*.of(WrappedChatComponent
+                                .fromChatMessage(HexUtil.colorify(parsePlaceholders(line.getLine())))[0].getHandle());*/
+
+                /*dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
                 dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true);
 
                 metaPacket.setMetadata(dataWatcher.getWatchableObjects());
-                metaPacket.sendPacket(player);
+                metaPacket.sendPacket(player);*/
 
             }
         }
@@ -160,9 +176,13 @@ public class Hologram {
 
 
     public void destroy(){
-        WrapperPlayServerEntityDestroy packet = new WrapperPlayServerEntityDestroy();
-        packet.setEntityIds(ids.stream().mapToInt(i->i).toArray());
-        packet.sendPacket(player);
+        //WrapperPlayServerEntityDestroy packet = new WrapperPlayServerEntityDestroy();
+        //packet.setEntityIds(ids.stream().mapToInt(i->i).toArray());
+        //packet.sendPacket(player);
+
+        for(int id : ids){
+            HoloPacket.Companion.getINSTANCE().destroyEntity(player, id);
+        }
 
         ids.clear();
         isAlive = false;
@@ -177,7 +197,7 @@ public class Hologram {
             double distance = player.getLocation().distanceSquared(location);
             if(distance <= range*range){
                 if(isAlive){
-                    update();
+                    //update();
                 }else{
                     construct();
                 }

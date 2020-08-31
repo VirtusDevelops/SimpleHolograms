@@ -21,16 +21,8 @@ public class ExamplePlaceholders {
 
     public void registerPlaceholders(){
         PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST8}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST7}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST6}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST5}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST4}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST3}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST2}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST1}", 10.0, this::getValue));
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST0}", 10.0, this::getValue));
 
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{THISDA}", 0.1, this::getValue));
+        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{COUNTER}", 0.1, this::getValue));
     }
 
     public String getValue(){

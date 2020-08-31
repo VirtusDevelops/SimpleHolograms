@@ -16,16 +16,20 @@ class PlaceholderManager() {
 
         fun load(plugin: ClickableHolosTest) {
             Bukkit.getScheduler().runTaskTimer(plugin, Runnable {
+                var updated = false
                 for (placeholder in PlaceholderRegistry.placeholders) {
                     if (elapsedTenthsOfSecond % placeholder.tenthsToRefresh == 0L) {
                         try {
                             placeholder.update()
+                            updated = true
                         } catch (t: Throwable) {
                             VirtusCore.console().sendMessage("Error: ${t.message}")
                         }
                     }
                 }
-                plugin.tick()
+                if(updated) {
+                    plugin.tick()
+                }
                 elapsedTenthsOfSecond++
             }, 5L, 2L)
 

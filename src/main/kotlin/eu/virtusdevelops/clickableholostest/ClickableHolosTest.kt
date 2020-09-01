@@ -2,10 +2,10 @@ package eu.virtusdevelops.clickableholostest
 
 import eu.virtusdevelops.clickableholostest.commands.CreateCommand
 import eu.virtusdevelops.clickableholostest.commands.ReloadCommand
-import eu.virtusdevelops.clickableholostest.handlers.HologramRegistry
+import eu.virtusdevelops.clickableholostest.hologram.HologramRegistry
 import eu.virtusdevelops.clickableholostest.hologram.HologramStorage
 import eu.virtusdevelops.clickableholostest.listeners.PlayerJoinEvent
-import eu.virtusdevelops.clickableholostest.nms.HoloPacket
+import eu.virtusdevelops.clickableholostest.placeholder.NeededPlaceholders
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderManager
 import eu.virtusdevelops.clickableholotest.example.ExamplePlaceholders
 import eu.virtusdevelops.virtuscore.VirtusCore
@@ -35,11 +35,16 @@ class ClickableHolosTest: JavaPlugin() {
         commandManager = CommandManager(this)
 
         PlaceholderManager.load(this)
+
+        NeededPlaceholders(this)
+
         examplePlaceholders = ExamplePlaceholders(this)
         this.hologramRegistry = HologramRegistry()
 
         this.hologramStorage = HologramStorage(this, fileManager, hologramRegistry)
-        hologramStorage.loadHolograms()
+
+        hologramStorage.loadHolograms() // loads templates
+        hologramRegistry.loadHolograms() // loads holograms from templates
 
         pm.registerEvents(PlayerJoinEvent(this, hologramRegistry), this)
         startTask()
@@ -72,10 +77,4 @@ class ClickableHolosTest: JavaPlugin() {
         )
     }
 
-
-    fun Any.retrieveField(name: String): Any
-            = this::class.java.getDeclaredField(name).apply { isAccessible = true }.get(this)
-
-    fun Any.updateField(name: String, value: Any)
-            = this::class.java.getDeclaredField(name).apply { isAccessible = true }.set(this, value)
 }

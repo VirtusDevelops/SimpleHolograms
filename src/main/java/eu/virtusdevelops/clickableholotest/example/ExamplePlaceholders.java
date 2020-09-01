@@ -3,8 +3,6 @@ package eu.virtusdevelops.clickableholotest.example;
 import eu.virtusdevelops.clickableholostest.ClickableHolosTest;
 import eu.virtusdevelops.clickableholostest.placeholder.Placeholder;
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry;
-import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderReplacer;
-import org.jetbrains.annotations.NotNull;
 
 public class ExamplePlaceholders {
 
@@ -20,9 +18,9 @@ public class ExamplePlaceholders {
 
 
     public void registerPlaceholders(){
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST8}", 10.0, this::getValue));
+        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{TEST8}", 0.5, this::getRandom));
 
-        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{COUNTER}", 0.1, this::getValue));
+        PlaceholderRegistry.Companion.registerPlaceholder(new Placeholder(plugin, "{COUNTER}", 1, this::getValue));
     }
 
     public String getValue(){

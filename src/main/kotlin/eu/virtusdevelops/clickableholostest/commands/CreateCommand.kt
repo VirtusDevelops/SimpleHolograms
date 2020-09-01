@@ -1,7 +1,6 @@
 package eu.virtusdevelops.clickableholostest.commands
 
-import eu.virtusdevelops.clickableholostest.ClickableHolosTest
-import eu.virtusdevelops.clickableholostest.handlers.HologramRegistry
+import eu.virtusdevelops.clickableholostest.hologram.HologramRegistry
 import eu.virtusdevelops.clickableholostest.hologram.HologramTemplate
 import eu.virtusdevelops.clickableholotest.hologram.Hologram
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
@@ -14,9 +13,15 @@ class CreateCommand(private val fileManager: FileManager, private val hologramRe
     override fun runCommand(sender: CommandSender?, vararg args: String?): ReturnType {
         if(args.isNotEmpty() && sender is Player){
 
+
             val hologramTemplate =
-                HologramTemplate(mutableListOf("Example line"), args[0].toString(), 1, null, sender.location)
+                HologramTemplate(mutableListOf("Example line"), args[0].toString(), 10, null, sender.location)
             val configuration = fileManager.getConfiguration("holograms")
+
+            if(configuration.contains(hologramTemplate.name)){
+                return ReturnType.SUCCESS
+            }
+
             configuration.set("${hologramTemplate.name}.location", hologramTemplate.location)
             configuration.set("${hologramTemplate.name}.range", hologramTemplate.range)
             configuration.set("${hologramTemplate.name}.permission", hologramTemplate.permission)
@@ -24,8 +29,8 @@ class CreateCommand(private val fileManager: FileManager, private val hologramRe
             fileManager.saveFile("holograms.yml")
 
             hologramRegistry.addHologram(Hologram(
-                hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1, sender).updateRange(hologramTemplate.range)
-                , sender)
+                hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1).updateRange(hologramTemplate.range))
+            hologramRegistry.register(sender, hologramTemplate.name)
         }
 
 

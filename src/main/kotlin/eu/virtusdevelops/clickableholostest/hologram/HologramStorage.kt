@@ -1,7 +1,6 @@
 package eu.virtusdevelops.clickableholostest.hologram
 
 import eu.virtusdevelops.clickableholostest.ClickableHolosTest
-import eu.virtusdevelops.clickableholostest.handlers.HologramRegistry
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import org.bukkit.Location
 

@@ -1,10 +1,7 @@
 package eu.virtusdevelops.clickableholostest.handlers
 
 
-import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import eu.virtusdevelops.clickableholostest.ClickableHolosTest
-import eu.virtusdevelops.clickableholotest.packet.WrapperPlayServerEntityTeleport
-import eu.virtusdevelops.clickableholotest.packet.WrapperPlayServerSpawnEntityLiving
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
@@ -29,11 +26,11 @@ class ClickHandler(private val player: Player, private val plugin: ClickableHolo
         center.y = 67.0
         center.z = 113.0
 
-        spawnMobs()
-        startTask()
+        //spawnMobs()
+        //startTask()
 
     }
-
+    /*
     private fun spawnMobs(){
 
         val id = (0 .. Int.MAX_VALUE).random()
@@ -112,4 +109,6 @@ class ClickHandler(private val player: Player, private val plugin: ClickableHolo
         task.cancel()
         mobs.clear()
     }
+
+     */
 }

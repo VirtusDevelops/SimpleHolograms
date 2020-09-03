@@ -1,14 +1,16 @@
 package eu.virtusdevelops.clickableholotest.hologram;
 
-import eu.virtusdevelops.clickableholostest.hologram.PlaceholderLine;
+import eu.virtusdevelops.clickableholostest.ClickableHolosTest;
+import eu.virtusdevelops.clickableholostest.hologram.DynamicHologramLine;
 import eu.virtusdevelops.clickableholostest.nms.HoloPacket;
 import eu.virtusdevelops.clickableholostest.placeholder.Placeholder;
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry;
 import eu.virtusdevelops.clickableholostest.utils.LineUtil;
-import eu.virtusdevelops.virtuscore.utils.HexUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -18,14 +20,20 @@ public class Hologram {
     private Location location;
     private int distance;
     private int range = 10;
+    private ClickableHolosTest plugin;
+    private BukkitTask task;
+
 
     private List<Integer> ids = new ArrayList<>();
 
-    private List<PlaceholderLine> placeholderLines = new ArrayList<>();
+    //private List<DynamicLineData> dynamicLines = new ArrayList<>();
+
+    private List<DynamicHologramLine> dynamicHologramLines = new ArrayList<>();
 
     private Map<Player, Boolean> viewers = new HashMap<>();
 
     private HoloPacket holoPacket = HoloPacket.Companion.getINSTANCE();
+    private Long currentTicks = 0L;
     //private List<ViewerData> viewers = new ArrayList<>();
 
 
@@ -34,32 +42,78 @@ public class Hologram {
 
     private Random random = new Random();
 
-    public Hologram(String name, List<String> lines, Location location, int distance){
+    public Hologram(ClickableHolosTest plugin, String name, List<String> lines, Location location, int range){
         this.name = name;
         this.lines = lines;
         this.location = location;
-        this.distance = distance;
-        for(String line : lines) {
-            if (LineUtil.Companion.containsPlaceholders(line)){
-                containsPlaceholders = true;
-                break;
-            }
-        }
+        this.distance = range;
+        this.plugin = plugin;
+
 
         for(String line: lines){
             int id = random.nextInt();
+            int refresh = LineUtil.Companion.containsPlaceholders(line);
+            if(refresh != -1){
+                //dynamicLines.add(new DynamicLineData(id, line, refresh));
 
-            if(LineUtil.Companion.containsPlaceholders(line)){
-                placeholderLines.add(new PlaceholderLine(line, id));
+                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
+
+                containsPlaceholders = true;
+                //placeholderLines.add(new PlaceholderLine(line, id, reg));
             }
 
             ids.add(id);
         }
-        //construct();
+
+
+        startTask();
+
     }
     public Hologram updateRange(int range){
         this.range = range;
         return this;
+    }
+
+    public void startTask(){
+
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+
+            for(Player data : viewers.keySet()){
+                Player player = data.getPlayer();
+                if(player == null || !player.isOnline()){
+                    viewers.remove(player);
+                }
+                if(player.getWorld() == location.getWorld()){
+                    double distance = player.getLocation().distanceSquared(location);
+                    if(distance <= range*range){
+                        if(!viewers.get(player)){
+                            construct(player);
+                            viewers.replace(player, true);
+                        }else{
+                            /*for(DynamicHologramLine line : dynamicHologramLines){
+                                line.update(player, currentTicks);
+                            }*/
+                        }
+                    }else{
+                        if(viewers.get(player)){
+                            destroy(player);
+                            viewers.replace(player, false);
+                        }
+                    }
+                }else{
+                    if(viewers.get(player)){
+                        viewers.replace(player, false);
+                    }
+                }
+            }
+
+
+
+            for(DynamicHologramLine line : dynamicHologramLines){
+                line.update(viewers, currentTicks);
+            }
+            currentTicks++;
+        }, 10L, 2L);
     }
 
 
@@ -75,7 +129,7 @@ public class Hologram {
             String line = lines.get(x);
 
             holoPacket.spawnArmorStand(player, id, UUID.randomUUID(), newLoc);
-            holoPacket.updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)));
+            holoPacket.updateArmorStandDisplayName(player, id, parsePlaceholders(line, player));
             x++;
             y-=0.25;
         }
@@ -113,7 +167,7 @@ public class Hologram {
         destroy(player);
     }
 
-    public void tick(){
+    /*public void tick(){
         for(Player data : viewers.keySet()){
             Player player = data.getPlayer();
             if(!player.isOnline()){
@@ -138,20 +192,21 @@ public class Hologram {
                 }
             }
         }
-    }
+    }*/
 
-    public void tickPlaceholderLines(){ // still need to add check how often should each line be updated...
+    /*public void tickPlaceholderLines(long tenthsPassed){ // still need to add check how often should each line be updated...
         for(Player data : viewers.keySet()){
             if(viewers.get(data)){
                 Player player = data.getPlayer();
-                for (PlaceholderLine line : placeholderLines) {
-                    holoPacket.updateArmorStandDisplayName(player, line.getId(), HexUtil.colorify(parsePlaceholders(line.getLine(), data)));
+                for (DynamicLineData line : dynamicLines) {
+                    if(tenthsPassed % line.getRefreshRate() == 0L)
+                        holoPacket.updateArmorStandDisplayName(player, line.getId(), HexUtil.colorify(parsePlaceholders(line.getLine(), data)));
                 }
 
             }
 
         }
-    }
+    }*/
 
     public String getName() {
         return name;

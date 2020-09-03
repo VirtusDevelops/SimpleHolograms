@@ -1,5 +1,6 @@
 package eu.virtusdevelops.clickableholostest.commands
 
+import eu.virtusdevelops.clickableholostest.ClickableHolosTest
 import eu.virtusdevelops.clickableholostest.hologram.HologramRegistry
 import eu.virtusdevelops.clickableholostest.hologram.HologramTemplate
 import eu.virtusdevelops.clickableholotest.hologram.Hologram
@@ -8,7 +9,7 @@ import eu.virtusdevelops.virtuscore.managers.FileManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CreateCommand(private val fileManager: FileManager, private val hologramRegistry: HologramRegistry) : AbstractCommand(CommandType.PLAYER_ONLY, "create") {
+class CreateCommand(private var plugin: ClickableHolosTest, val fileManager: FileManager, private val hologramRegistry: HologramRegistry) : AbstractCommand(CommandType.PLAYER_ONLY, "create") {
 
     override fun runCommand(sender: CommandSender?, vararg args: String?): ReturnType {
         if(args.isNotEmpty() && sender is Player){
@@ -28,8 +29,8 @@ class CreateCommand(private val fileManager: FileManager, private val hologramRe
             configuration.set("${hologramTemplate.name}.lines", hologramTemplate.lines.toMutableList())
             fileManager.saveFile("holograms.yml")
 
-            hologramRegistry.addHologram(Hologram(
-                hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1).updateRange(hologramTemplate.range))
+            hologramRegistry.addHologram(Hologram(plugin,
+                hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, hologramTemplate.range))
             hologramRegistry.register(sender, hologramTemplate.name)
         }
 

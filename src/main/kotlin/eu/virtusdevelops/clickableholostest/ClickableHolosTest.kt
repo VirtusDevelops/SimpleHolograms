@@ -5,9 +5,9 @@ import eu.virtusdevelops.clickableholostest.commands.ReloadCommand
 import eu.virtusdevelops.clickableholostest.hologram.HologramRegistry
 import eu.virtusdevelops.clickableholostest.hologram.HologramStorage
 import eu.virtusdevelops.clickableholostest.listeners.PlayerJoinEvent
+import eu.virtusdevelops.clickableholostest.nms.HoloPacket
 import eu.virtusdevelops.clickableholostest.placeholder.NeededPlaceholders
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderManager
-import eu.virtusdevelops.clickableholotest.example.ExamplePlaceholders
 import eu.virtusdevelops.virtuscore.VirtusCore
 import eu.virtusdevelops.virtuscore.command.CommandManager
 import eu.virtusdevelops.virtuscore.managers.FileManager
@@ -20,12 +20,12 @@ class ClickableHolosTest: JavaPlugin() {
 
     private lateinit var hologramRegistry: HologramRegistry
     private lateinit var hologramStorage: HologramStorage
-    private lateinit var examplePlaceholders: ExamplePlaceholders
     private lateinit var commandManager: CommandManager
     private lateinit var fileManager: FileManager
 
     override fun onEnable() {
 
+        HoloPacket.INSTANCE
 
         val pm = VirtusCore.plugins()
         fileManager = FileManager(this, linkedSetOf<FileLocation>(
@@ -34,12 +34,12 @@ class ClickableHolosTest: JavaPlugin() {
         fileManager.loadFiles()
         commandManager = CommandManager(this)
 
+
         PlaceholderManager.load(this)
 
         NeededPlaceholders(this)
 
-        examplePlaceholders = ExamplePlaceholders(this)
-        this.hologramRegistry = HologramRegistry()
+        this.hologramRegistry = HologramRegistry(this)
 
         this.hologramStorage = HologramStorage(this, fileManager, hologramRegistry)
 
@@ -66,13 +66,13 @@ class ClickableHolosTest: JavaPlugin() {
         }, 0, 2L)*/
     }
 
-    fun tick(){
-        hologramRegistry.updatePlaceholders();
+    fun tick(elapsedTenthsOfSecond: Long){
+        //hologramRegistry.updatePlaceholders(elapsedTenthsOfSecond)
     }
 
     fun registerCommands(){
         commandManager.addMainCommand("simpleholograms").addSubCommands(
-            CreateCommand(fileManager, hologramRegistry),
+            CreateCommand(this, fileManager, hologramRegistry ),
             ReloadCommand(fileManager, hologramRegistry, hologramStorage)
         )
     }

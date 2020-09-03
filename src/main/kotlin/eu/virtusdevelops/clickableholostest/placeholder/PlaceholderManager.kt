@@ -27,7 +27,7 @@ class PlaceholderManager {
                 }
 
                 if(updated) {
-                    plugin.tick()
+                    plugin.tick(elapsedTenthsOfSecond)
                 }
                 elapsedTenthsOfSecond++
             }, 2L, 2L)

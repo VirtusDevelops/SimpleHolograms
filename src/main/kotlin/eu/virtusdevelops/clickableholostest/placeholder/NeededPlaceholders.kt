@@ -10,28 +10,28 @@ class NeededPlaceholders(clickableHolosTest: ClickableHolosTest) {
                 clickableHolosTest,
                 "{SLOW}",
                 10.0,
-                TimedPlaceholdersUpdater(mutableListOf("&8 &r", "&7 &r"))
+                TimedPlaceholdersUpdater(mutableListOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 clickableHolosTest,
                 "{SLOWISH}",
                 5.0,
-                TimedPlaceholdersUpdater(mutableListOf("&8 &r", "&7 &r"))
+                TimedPlaceholdersUpdater(mutableListOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 clickableHolosTest,
                 "{MEDIUM}",
                 1.0,
-                TimedPlaceholdersUpdater(mutableListOf("&8 &r", "&7 &r"))
+                TimedPlaceholdersUpdater(mutableListOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 clickableHolosTest,
                 "{FAST}",
                 0.1,
-                TimedPlaceholdersUpdater(mutableListOf("&8 &r", "&7 &r"))
+                TimedPlaceholdersUpdater(mutableListOf("", ""))
         ))
     }
 

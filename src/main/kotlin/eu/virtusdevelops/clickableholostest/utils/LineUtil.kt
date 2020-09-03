@@ -4,13 +4,13 @@ import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry
 
 class LineUtil{
     companion object{
-        fun containsPlaceholders(line: String): Boolean{
+        fun containsPlaceholders(line: String): Int{
             for(placeholder in PlaceholderRegistry.placeholders){
                 if(line.contains(placeholder.textPlaceholder, true)){
-                    return true
+                    return placeholder.tenthsToRefresh
                 }
             }
-            return false
+            return -1
         }
     }
 }

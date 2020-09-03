@@ -1,12 +1,11 @@
 package eu.virtusdevelops.clickableholostest.hologram
 
-import eu.virtusdevelops.clickableholostest.hologram.HologramTemplate
+import eu.virtusdevelops.clickableholostest.ClickableHolosTest
 import eu.virtusdevelops.clickableholotest.hologram.Hologram
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.*
 
-class HologramRegistry {
+class HologramRegistry(private var plugin: ClickableHolosTest) {
 
 
     private val holograms: MutableList<Hologram> = mutableListOf()
@@ -26,7 +25,7 @@ class HologramRegistry {
 
     fun loadHolograms(){
         for(hologramTemplate in hologramTemplates){
-            holograms.add(Hologram(hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1).updateRange(hologramTemplate.range))
+            holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1).updateRange(hologramTemplate.range))
         }
     }
 
@@ -75,15 +74,15 @@ class HologramRegistry {
     }
 
     fun update(){
-        for(hologram in holograms){
+        /*for(hologram in holograms){
             hologram.tick()
-        }
+        }*/
     }
 
-    fun updatePlaceholders(){
-        for(hologram in holograms){
-            hologram.tickPlaceholderLines()
-        }
+    fun updatePlaceholders(elapsedTenthsOfSecond: Long){
+        /*for(hologram in holograms){
+            hologram.tickPlaceholderLines(elapsedTenthsOfSecond)
+        }*/
     }
 
 }

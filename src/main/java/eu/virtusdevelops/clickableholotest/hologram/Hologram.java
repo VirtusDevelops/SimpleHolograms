@@ -6,6 +6,7 @@ import eu.virtusdevelops.clickableholostest.nms.HoloPacket;
 import eu.virtusdevelops.clickableholostest.placeholder.Placeholder;
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry;
 import eu.virtusdevelops.clickableholostest.utils.LineUtil;
+import eu.virtusdevelops.virtuscore.utils.HexUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,19 +26,12 @@ public class Hologram {
 
 
     private List<Integer> ids = new ArrayList<>();
-
-    //private List<DynamicLineData> dynamicLines = new ArrayList<>();
-
     private List<DynamicHologramLine> dynamicHologramLines = new ArrayList<>();
-
     private Map<Player, Boolean> viewers = new HashMap<>();
 
     private HoloPacket holoPacket = HoloPacket.Companion.getINSTANCE();
     private Long currentTicks = 0L;
-    //private List<ViewerData> viewers = new ArrayList<>();
 
-
-    private boolean containsPlaceholders = false;
 
 
     private Random random = new Random();
@@ -54,64 +48,82 @@ public class Hologram {
             int id = random.nextInt();
             int refresh = LineUtil.Companion.containsPlaceholders(line);
             if(refresh != -1){
-                //dynamicLines.add(new DynamicLineData(id, line, refresh));
-
                 dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
-
-                containsPlaceholders = true;
-                //placeholderLines.add(new PlaceholderLine(line, id, reg));
             }
+            ids.add(id);
+        }
+        startTask();
+    }
 
+    public void refresh(){
+
+        viewers.forEach((player, aBoolean) -> {
+            destroy(player);
+        });
+
+        task.cancel();
+        ids.clear();
+        dynamicHologramLines.clear();
+
+        for(String line: lines){
+            int id = random.nextInt();
+            int refresh = LineUtil.Companion.containsPlaceholders(line);
+            if(refresh != -1){
+                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
+            }
             ids.add(id);
         }
 
+        viewers.forEach((player, aBoolean) -> {
+            construct(player);
+        });
 
         startTask();
 
     }
+
+
     public Hologram updateRange(int range){
         this.range = range;
         return this;
     }
 
+
     public void startTask(){
 
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
 
-            for(Player data : viewers.keySet()){
-                Player player = data.getPlayer();
-                if(player == null || !player.isOnline()){
+
+            for (Map.Entry<Player, Boolean> playerBooleanEntry : viewers.entrySet()) {
+
+                Map.Entry pair = playerBooleanEntry;
+                Player player = (Player) pair.getKey();
+                Boolean isAlive = (Boolean) pair.getValue();
+
+                if (player == null || !player.isOnline()) {
                     viewers.remove(player);
-                }
-                if(player.getWorld() == location.getWorld()){
+                } else if (player.getWorld() == location.getWorld()) {
                     double distance = player.getLocation().distanceSquared(location);
-                    if(distance <= range*range){
-                        if(!viewers.get(player)){
+                    if (distance <= range * range) {
+                        if (!isAlive) {
                             construct(player);
                             viewers.replace(player, true);
-                        }else{
-                            /*for(DynamicHologramLine line : dynamicHologramLines){
-                                line.update(player, currentTicks);
-                            }*/
                         }
-                    }else{
-                        if(viewers.get(player)){
+                    } else {
+                        if (isAlive) {
                             destroy(player);
                             viewers.replace(player, false);
                         }
                     }
-                }else{
-                    if(viewers.get(player)){
-                        viewers.replace(player, false);
-                    }
+                } else if (isAlive) {
+                    destroy(player);
+                    viewers.replace(player, false);
                 }
             }
-
-
-
             for(DynamicHologramLine line : dynamicHologramLines){
                 line.update(viewers, currentTicks);
             }
+
             currentTicks++;
         }, 10L, 2L);
     }
@@ -129,7 +141,7 @@ public class Hologram {
             String line = lines.get(x);
 
             holoPacket.spawnArmorStand(player, id, UUID.randomUUID(), newLoc);
-            holoPacket.updateArmorStandDisplayName(player, id, parsePlaceholders(line, player));
+            holoPacket.updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)));
             x++;
             y-=0.25;
         }
@@ -156,6 +168,10 @@ public class Hologram {
         viewers.put(player, false);
     }
 
+    public void destroyLine(Player player, int lineId){
+        holoPacket.destroyEntity(player, lineId);
+    }
+
     public void register(Player player){
         viewers.put(player, false);
         construct(player);
@@ -167,52 +183,56 @@ public class Hologram {
         destroy(player);
     }
 
-    /*public void tick(){
-        for(Player data : viewers.keySet()){
-            Player player = data.getPlayer();
-            if(!player.isOnline()){
-                viewers.remove(player);
-            }
-            if(player.getWorld() == location.getWorld()){
-                double distance = player.getLocation().distanceSquared(location);
-                if(distance <= range*range){
-                    if(!viewers.get(player)){
-                        construct(player);
-                        viewers.replace(player, true);
-                    }
-                }else{
-                    if(viewers.get(player)){
-                        destroy(player);
-                        viewers.replace(player, false);
-                    }
-                }
-            }else{
-                if(viewers.get(player)){
-                    viewers.replace(player, false);
-                }
-            }
-        }
-    }*/
-
-    /*public void tickPlaceholderLines(long tenthsPassed){ // still need to add check how often should each line be updated...
-        for(Player data : viewers.keySet()){
-            if(viewers.get(data)){
-                Player player = data.getPlayer();
-                for (DynamicLineData line : dynamicLines) {
-                    if(tenthsPassed % line.getRefreshRate() == 0L)
-                        holoPacket.updateArmorStandDisplayName(player, line.getId(), HexUtil.colorify(parsePlaceholders(line.getLine(), data)));
-                }
-
-            }
-
-        }
-    }*/
 
     public String getName() {
         return name;
     }
 
-    public boolean containsPlaceholders(){
-        return containsPlaceholders;
+    public void destroyClass(){
+
+        this.task.cancel();
+        this.task = null;
+        viewers.forEach((player, aBoolean) -> {
+            destroy(player);
+        });
+        viewers.clear();
+        holoPacket = null;
+        dynamicHologramLines.clear();
+
+    }
+
+    public List<String> getLines(){
+        return lines;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLines(List<String> lines) {
+        this.lines = lines;
+    }
+
+    public void setLine(String line, int position){
+        task.cancel();
+        lines.set(position, line);
+        startTask();
+    }
+
+    public void addLine(String line){
+        lines.add(line);
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void removeLine(int position){
+        task.cancel();
+        lines.remove(position);
+        viewers.forEach((player, aBoolean) -> {
+            destroyLine(player, ids.get(position));
+        });
+        startTask();
     }
 }

@@ -44,10 +44,10 @@ class ReloadCommand(private val fileManager: FileManager, private val hologramRe
     }
 
     override fun getDescription(): String {
-        return "Create the hologram!"
+        return "Reload the plugin!"
     }
 
     override fun getSyntax(): String {
-       return "/simpleholograms create <name>"
+       return "/simpleholograms reload"
     }
 }

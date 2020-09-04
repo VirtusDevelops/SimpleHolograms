@@ -9,7 +9,8 @@ import eu.virtusdevelops.virtuscore.managers.FileManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CreateCommand(private var plugin: ClickableHolosTest, val fileManager: FileManager, private val hologramRegistry: HologramRegistry) : AbstractCommand(CommandType.PLAYER_ONLY, "create") {
+class CreateCommand(private var plugin: ClickableHolosTest, val fileManager: FileManager, private val hologramRegistry: HologramRegistry) :
+        AbstractCommand(CommandType.PLAYER_ONLY, "create") {
 
     override fun runCommand(sender: CommandSender?, vararg args: String?): ReturnType {
         if(args.isNotEmpty() && sender is Player){

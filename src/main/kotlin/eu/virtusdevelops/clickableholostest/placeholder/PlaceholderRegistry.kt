@@ -1,5 +1,6 @@
 package eu.virtusdevelops.clickableholostest.placeholder
 
+import eu.virtusdevelops.clickableholostest.API.PlaceholderReplacer
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -7,6 +8,10 @@ class PlaceholderRegistry{
     companion object{
         val placeholders = mutableSetOf<Placeholder>()
 
+
+        fun registerPlaceholder(plugin: JavaPlugin, refreshrate: Double, replacer: PlaceholderReplacer, placeholder: String){
+            registerPlaceholder(Placeholder(plugin, placeholder, refreshrate, replacer))
+        }
 
 
         fun registerPlaceholder(placeholder: Placeholder){

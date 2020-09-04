@@ -2,12 +2,13 @@ package eu.virtusdevelops.clickableholostest.hologram
 
 import eu.virtusdevelops.clickableholostest.nms.HoloPacket
 import eu.virtusdevelops.clickableholostest.placeholder.PlaceholderRegistry.Companion.placeholders
+import eu.virtusdevelops.virtuscore.VirtusCore
 import eu.virtusdevelops.virtuscore.utils.HexUtil
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player
 import java.util.*
 
-open class DynamicHologramLine(private var line: String, private var id: Int, private var refresh: Int) {
+open class DynamicHologramLine(private var line: String, private var id: Int, private var refresh: Double) {
 
     var uuid = UUID.randomUUID()
 
@@ -15,17 +16,16 @@ open class DynamicHologramLine(private var line: String, private var id: Int, pr
 
 
     fun update(players: MutableMap<Player, Boolean>, tenthsPassed: Long){
-        if(tenthsPassed % refresh == 0L) {
-            for (data in players) {
-                if (data.value) {
-                    getPackets().updateArmorStandDisplayName(data.key, id, HexUtil.colorify(parsePlaceholders(line, data.key)))
-                }
+        if(tenthsPassed % refresh == 0.0) {
+            players.forEach { player, isAlive ->
+                if(isAlive) getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
             }
+
         }
     }
 
     fun update(player: Player, tenthsPassed: Long){
-        if(tenthsPassed % refresh == 0L) {
+        if(tenthsPassed % refresh == 0.0) {
             getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
         }
     }

@@ -1,12 +1,14 @@
 package eu.virtusdevelops.clickableholostest.placeholder
 
+import eu.virtusdevelops.clickableholostest.API.PlaceholderReplacer
 import org.bukkit.plugin.java.JavaPlugin
 
 data class Placeholder(
     val owner: JavaPlugin,
     val textPlaceholder: String,
     val refreshRate: Double,
-    var replacer: PlaceholderReplacer){
+    var replacer: PlaceholderReplacer
+){
 
     var currentReplacement: String = ""
     var tenthsToRefresh: Int = 0

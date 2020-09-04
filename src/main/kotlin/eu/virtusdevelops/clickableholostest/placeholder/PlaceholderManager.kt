@@ -16,18 +16,11 @@ class PlaceholderManager {
 
 
             Bukkit.getScheduler().runTaskTimer(plugin, Runnable {
-                var updated = false
-
-
                 for (placeholder in PlaceholderRegistry.placeholders) {
                     if (elapsedTenthsOfSecond % placeholder.tenthsToRefresh == 0L) {
                         placeholder.update()
-                        updated = true
-                    }
-                }
 
-                if(updated) {
-                    plugin.tick(elapsedTenthsOfSecond)
+                    }
                 }
                 elapsedTenthsOfSecond++
             }, 2L, 2L)

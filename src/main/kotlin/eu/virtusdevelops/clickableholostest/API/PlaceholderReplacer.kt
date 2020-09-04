@@ -1,4 +1,4 @@
-package eu.virtusdevelops.clickableholostest.placeholder
+package eu.virtusdevelops.clickableholostest.API
 
 interface PlaceholderReplacer {
 
@@ -6,5 +6,5 @@ interface PlaceholderReplacer {
      * Called to update a placeholder's replacement.
      * @return the replacement
      */
-    fun update() : String
+    fun update() : String?
 }

@@ -1,6 +1,9 @@
 package eu.virtusdevelops.clickableholostest.placeholder
 
-class TimedPlaceholdersUpdater(private val frames: MutableList<String>) : PlaceholderReplacer {
+import eu.virtusdevelops.clickableholostest.API.PlaceholderReplacer
+
+class TimedPlaceholdersUpdater(private val frames: MutableList<String>) :
+    PlaceholderReplacer {
 
     private var index : Int = 0
 

@@ -43,7 +43,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile group: 'eu.virtusdevelops', name: 'VirtusCore', version:'1.0.7.5'
+    compile group: 'eu.virtusdevelops', name: 'VirtusCore', version:'1.0.7.8'
     compileOnly group: 'org.spigotmc', name: 'spigot', version: '1.16.2-R0.1-SNAPSHOT'
     compileOnly group: 'org.spigotmc', name: 'spigot', version: '1.15.2-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.9'
@@ -54,7 +54,7 @@ dependencies {
 }
 
 shadowJar {
-    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.clickableholostest"
+    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.virtuscoreholos"
 }
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"

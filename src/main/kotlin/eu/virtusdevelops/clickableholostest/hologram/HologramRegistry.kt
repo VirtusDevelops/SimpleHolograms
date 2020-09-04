@@ -25,7 +25,7 @@ class HologramRegistry(private var plugin: ClickableHolosTest) {
 
     fun loadHolograms(){
         for(hologramTemplate in hologramTemplates){
-            holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, 1).updateRange(hologramTemplate.range))
+            holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, hologramTemplate.range))
         }
     }
 
@@ -33,27 +33,49 @@ class HologramRegistry(private var plugin: ClickableHolosTest) {
         holograms.add(hologram)
     }
 
-    fun clearHolograms(){
-        for(hologram in holograms){
-            for(player in Bukkit.getOnlinePlayers()){
-                hologram.unregister(player)
+    fun addHologram(template: HologramTemplate){
+        holograms.add(Hologram(plugin,template.name, template.lines, template.location, template.range))
+    }
+
+    fun getHologram(hologram: String): Hologram?{
+        holograms.asSequence().forEach {
+            if(it.name == hologram){
+                return it
             }
+        }
+        return null
+    }
+
+    fun clearHolograms(){
+        holograms.asSequence().forEach {
+            it.destroyClass()
         }
         holograms.clear()
     }
 
+    fun removeHologram(name: String){
+        holograms.asSequence().forEach {
+            if(it.name == name){
+                it.destroyClass()
+                holograms.remove(it)
+                return
+            }
+        }
+    }
+
+
 
     fun register(player: Player){
-        for(hologram in holograms){
-            hologram.register(player)
+        holograms.asSequence().forEach {
+            it.register(player)
         }
     }
 
 
     fun register(player: Player, hologramName: String){
-        for(hologram in holograms){
-            if(hologram.name == hologramName){
-                hologram.register(player)
+        holograms.asSequence().forEach {
+            if(it.name == hologramName){
+                it.register(player)
             }
         }
     }
@@ -73,16 +95,5 @@ class HologramRegistry(private var plugin: ClickableHolosTest) {
         }
     }
 
-    fun update(){
-        /*for(hologram in holograms){
-            hologram.tick()
-        }*/
-    }
-
-    fun updatePlaceholders(elapsedTenthsOfSecond: Long){
-        /*for(hologram in holograms){
-            hologram.tickPlaceholderLines(elapsedTenthsOfSecond)
-        }*/
-    }
 
 }

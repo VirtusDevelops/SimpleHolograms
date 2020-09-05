@@ -1,4 +1,4 @@
-name: ClickableHolosTest
+name: SimpleHolograms
 main: eu.virtusdevelops.clickableholostest.ClickableHolosTest
 version: "TEST"
 

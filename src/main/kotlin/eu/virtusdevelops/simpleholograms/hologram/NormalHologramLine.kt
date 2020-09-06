@@ -7,29 +7,31 @@ import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player
 import java.util.*
 
-class DynamicHologramLine(private var line: String, private var id: Int, private var refresh: Double) {
+open class NormalHologramLine(private var line: String, private var id: Int) {
 
     var uuid = UUID.randomUUID()
+    var isVisible = true
 
-
-
-
-    fun update(players: MutableMap<Player, Boolean>, tenthsPassed: Long){
-        if(tenthsPassed % refresh == 0.0) {
-            players.forEach { player, isAlive ->
-                if(isAlive) getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
-            }
-
+    init {
+        if(line.contains("{CLEAR}")){
+            isVisible = false
         }
     }
 
-    fun update(player: Player, tenthsPassed: Long){
-        if(tenthsPassed % refresh == 0.0) {
-            getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
+    fun update(players: MutableMap<Player, Boolean>) {
+        players.forEach { player, isAlive ->
+            if(isAlive)
+                if(!isVisible) getPackets().destroyEntity(player, id)
+                else getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
         }
     }
 
-    fun getPackets(): HoloPacket{
+    fun update(player: Player) {
+        if(!isVisible) getPackets().destroyEntity(player, id)
+        else getPackets().updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)))
+    }
+
+    fun getPackets(): HoloPacket {
         return HoloPacket.INSTANCE!!
     }
 

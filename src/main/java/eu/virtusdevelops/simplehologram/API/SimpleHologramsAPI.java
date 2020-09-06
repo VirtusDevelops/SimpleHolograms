@@ -46,14 +46,16 @@ public class SimpleHologramsAPI {
     /**
      * Create hologram, usefull for any plugin (Crates, informations...)
      * If using this method you need to register viewers using seperate function
+     * Returns hologram.
      *
      * @param name Name of hologram you're creating
      * @param range How far away can viewers be to see it (in blocks)
      * @param location Where should hologram be
      * @param lines Lines of hologram
+     * @return Returns hologram that it created.
      */
-    public static void createHologram(String name, int range, Location location, List<String> lines){
-        SimpleHolograms.getHologramRegistryAPI().addHologram(new HologramTemplate(lines, name, range, "", location));
+    public static Hologram createHologram(String name, int range, Location location, List<String> lines){
+        return SimpleHolograms.getHologramRegistryAPI().addHologram(new HologramTemplate(lines, name, range, "", location));
     }
 
     /**

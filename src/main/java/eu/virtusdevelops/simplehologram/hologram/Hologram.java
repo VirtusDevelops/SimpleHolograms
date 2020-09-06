@@ -2,6 +2,7 @@ package eu.virtusdevelops.simplehologram.hologram;
 
 import eu.virtusdevelops.simpleholograms.SimpleHolograms;
 import eu.virtusdevelops.simpleholograms.hologram.DynamicHologramLine;
+import eu.virtusdevelops.simpleholograms.hologram.NormalHologramLine;
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket;
 import eu.virtusdevelops.simpleholograms.placeholder.Placeholder;
 import eu.virtusdevelops.simpleholograms.placeholder.PlaceholderRegistry;
@@ -27,6 +28,7 @@ public class Hologram {
 
     private List<Integer> ids = new ArrayList<>();
     private List<DynamicHologramLine> dynamicHologramLines = new ArrayList<>();
+    private List<NormalHologramLine> normalHologramLines = new ArrayList<>();
     private Map<Player, Boolean> viewers = new HashMap<>();
 
     private HoloPacket holoPacket = HoloPacket.Companion.getINSTANCE();
@@ -42,6 +44,7 @@ public class Hologram {
         this.location = location;
         this.distance = range;
         this.plugin = plugin;
+        this.range = range;
 
 
         for(String line: lines){
@@ -49,6 +52,8 @@ public class Hologram {
             int refresh = LineUtil.Companion.containsPlaceholders(line);
             if(refresh != -1){
                 dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
+            }else{
+                normalHologramLines.add(new NormalHologramLine(line, id));
             }
             ids.add(id);
         }
@@ -135,6 +140,9 @@ public class Hologram {
     public void construct(Player player){
         double y = location.getY();
         int x = 0;
+
+
+
         for(int id : ids){
             Location newLoc = location.clone();
             newLoc.setY(y);
@@ -145,6 +153,11 @@ public class Hologram {
             x++;
             y-=0.25;
         }
+
+        for(NormalHologramLine line : normalHologramLines){
+            line.update(player);
+        }
+
         viewers.put(player, true);
 
     }

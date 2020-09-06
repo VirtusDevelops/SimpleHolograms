@@ -29,12 +29,15 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
         }
     }
 
-    fun addHologram(hologram: Hologram){
+    fun addHologram(hologram: Hologram): Hologram{
         holograms.add(hologram)
+        return hologram
     }
 
-    fun addHologram(template: HologramTemplate){
-        holograms.add(Hologram(plugin,template.name, template.lines, template.location, template.range))
+    fun addHologram(template: HologramTemplate): Hologram{
+        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range)
+        holograms.add(hologram)
+        return hologram
     }
 
     fun getHologram(hologram: String): Hologram?{

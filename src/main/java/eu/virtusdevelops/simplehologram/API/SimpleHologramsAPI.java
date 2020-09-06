@@ -25,6 +25,16 @@ public class SimpleHologramsAPI {
     }
 
     /**
+     * Get any hologram by its id, , keep in mind if there's no hologram with that id its gonna return null!
+     *
+     * @param id id of hologram
+     * @return returns null or Hologram if exists
+     */
+    public static Hologram getHologramById(int id){
+        return SimpleHolograms.getHologramRegistryAPI().getHologramByID(id);
+    }
+
+    /**
      *  Remove any hologram by its name.
      *
      * @param name Hologram name you wish to remove
@@ -92,6 +102,25 @@ public class SimpleHologramsAPI {
     }
 
     /**
+     * Remove player from specific hologram
+     *
+     * @param hologramName - Name of hologram to remove from
+     * @param viewer - Viewer/Player you wish not to see hologram anymore
+     */
+    public static void removeViewer(String hologramName, Player viewer){
+        SimpleHolograms.getHologramRegistryAPI().unregister(viewer, hologramName);
+    }
+
+    /**
+     *  Remove player from all holograms.
+     *
+     * @param viewer - Viewer/Player you wish not to see holograms anymore
+     */
+    public static void removeViewer(Player viewer){
+        SimpleHolograms.getHologramRegistryAPI().unregister(viewer);
+    }
+
+    /**
      * Add new placeholders to holograms (they change text upon what you choose them to be)
      *
      * @param plugin Plugin registering the placeholder
@@ -112,4 +141,5 @@ public class SimpleHologramsAPI {
     public static void unregisterPlaceholder(JavaPlugin plugin, String placeholder){
         PlaceholderRegistry.Companion.unregister(plugin, placeholder);
     }
+
 }

@@ -2,6 +2,7 @@ package eu.virtusdevelops.simpleholograms.hologram
 
 import eu.virtusdevelops.simpleholograms.SimpleHolograms
 import eu.virtusdevelops.simplehologram.hologram.Hologram
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 class HologramRegistry(private var plugin: SimpleHolograms) {
@@ -65,9 +66,11 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
 
 
     fun register(player: Player){
-        holograms.asSequence().forEach {
-            it.register(player)
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+            holograms.asSequence().forEach {
+                it.register(player)
+            }
+        })
     }
 
 
@@ -89,10 +92,20 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
     }
 
     fun unregister(player: Player){
-        for(hologram in holograms){
-            hologram.unregister(player)
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+            for (hologram in holograms) {
+                hologram.unregister(player)
+            }
+        })
     }
 
+    fun getHologramByID(id: Int): Hologram?{
+        holograms.asSequence().forEach {
+            if(it.ids.contains(id)){
+                return it
+            }
+        }
+        return null
+    }
 
 }

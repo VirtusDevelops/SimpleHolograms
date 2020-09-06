@@ -54,7 +54,7 @@ dependencies {
 }
 
 shadowJar {
-    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.virtuscoreholos"
+    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.simplehologramscore"
 }
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"

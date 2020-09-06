@@ -235,4 +235,8 @@ public class Hologram {
         });
         startTask();
     }
+
+    public List<Integer> getIds() {
+        return ids;
+    }
 }

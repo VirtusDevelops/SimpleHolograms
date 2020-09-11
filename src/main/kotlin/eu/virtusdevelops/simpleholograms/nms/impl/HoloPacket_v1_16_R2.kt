@@ -131,7 +131,6 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
                 Optional.of(name2.mutableCopy())
             )
         }
-
         return DataWatcher.Item<Optional<IChatBaseComponent>>(DataWatcherObject(2, DataWatcherRegistry.f), Optional.of(ChatComponentText(name)))
 
     }
@@ -141,7 +140,6 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
         for (obj in objects) {
             items.add(obj as DataWatcher.Item<*>)
         }
-
 
         val packet = setPacket(PacketPlayOutEntityMetadata(), mapOf(
                 Pair("a", entityId),
@@ -182,6 +180,7 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
             getMetaArmorStandProperties(true, false, true, false)
         )
     }
+
 
 
 

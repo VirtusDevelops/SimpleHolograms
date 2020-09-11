@@ -46,6 +46,7 @@ class SimpleHolograms: JavaPlugin() {
         hologramStorage.loadHolograms() // loads templates
         hologramRegistry.loadHolograms() // loads holograms from templates
 
+
         pm.registerEvents(PlayerJoinEvent(this, hologramRegistry), this)
 
 

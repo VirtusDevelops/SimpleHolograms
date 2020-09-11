@@ -43,8 +43,14 @@ class CreateCommand(private var plugin: SimpleHolograms, val fileManager: FileMa
         return "simpleholograms.command.create"
     }
 
-    override fun onTab(p0: CommandSender?, vararg p1: String?): MutableList<String> {
-        return mutableListOf("")
+    override fun onTab(p0: CommandSender?, vararg p1: String?): List<String> {
+        if(p1.size == 1) {
+            val arg = p1[0]
+            if(arg != null) {
+                return hologramRegistry.getHolograms().filter { it.name.contains(arg) }.map { it.name }
+            }
+        }
+        return mutableListOf()
     }
 
     override fun getDescription(): String {

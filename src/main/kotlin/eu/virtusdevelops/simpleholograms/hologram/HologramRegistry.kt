@@ -49,6 +49,10 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
         return null
     }
 
+    fun getHolograms(): MutableList<Hologram>{
+        return holograms
+    }
+
     fun clearHolograms(){
         holograms.asSequence().forEach {
             it.destroyClass()

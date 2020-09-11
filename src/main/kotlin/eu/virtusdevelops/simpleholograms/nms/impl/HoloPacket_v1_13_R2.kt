@@ -113,6 +113,7 @@ class HoloPacket_v1_13_R2 : HoloPacket(){
         ) as PacketPlayOutSpawnEntity
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
         initArmorStandAsHologram(player, entityId)
+
     }
 
     override fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack) {
@@ -134,6 +135,7 @@ class HoloPacket_v1_13_R2 : HoloPacket(){
         ) as PacketPlayOutSpawnEntity
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
         sendEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
+
     }
 
     override fun updateArmorStandDisplayName(player: Player, entityId: Int, name: String) {

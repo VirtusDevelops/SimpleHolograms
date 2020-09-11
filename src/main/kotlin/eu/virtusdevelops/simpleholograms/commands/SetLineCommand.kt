@@ -7,6 +7,7 @@ import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.HexUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.stream.Collector
 
 class SetLineCommand(private var plugin: SimpleHolograms, val fileManager: FileManager, private val hologramRegistry: HologramRegistry) :
         AbstractCommand(CommandType.PLAYER_ONLY, "setline") {
@@ -37,8 +38,14 @@ class SetLineCommand(private var plugin: SimpleHolograms, val fileManager: FileM
         return "simpleholograms.command.setline"
     }
 
-    override fun onTab(p0: CommandSender?, vararg p1: String?): MutableList<String> {
-        return mutableListOf("")
+    override fun onTab(p0: CommandSender?, vararg p1: String?): List<String> {
+        if(p1.size == 1) {
+            val arg = p1[0]
+            if(arg != null) {
+                return hologramRegistry.getHolograms().filter { it.name.contains(arg) }.map { it.name }
+            }
+        }
+        return mutableListOf()
     }
 
     override fun getDescription(): String {

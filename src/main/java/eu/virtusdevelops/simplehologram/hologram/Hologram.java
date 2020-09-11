@@ -48,7 +48,7 @@ public class Hologram {
 
 
         for(String line: lines){
-            int id = random.nextInt();
+            int id = 35000 + random.nextInt(2000000000);
             int refresh = LineUtil.Companion.containsPlaceholders(line);
             if(refresh != -1){
                 dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));

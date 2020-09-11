@@ -7,6 +7,9 @@ commands:
   simpleholograms:
     description: "Main command"
     permission: "simpleholograms.command.main"
+    aliases:
+      - "sh"
+      - "simpleholo"
 
 permissions:
   simpleholograms.command.reload:

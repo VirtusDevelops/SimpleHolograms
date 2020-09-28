@@ -4,6 +4,7 @@ import eu.virtusdevelops.simpleholograms.placeholder.PlaceholderRegistry
 
 class LineUtil{
     companion object{
+        @JvmStatic
         fun containsPlaceholders(line: String): Int{
             for(placeholder in PlaceholderRegistry.placeholders){
                 if(line.contains(placeholder.textPlaceholder, true)){

@@ -7,7 +7,6 @@ import eu.virtusdevelops.simpleholograms.nms.HoloPacket;
 import eu.virtusdevelops.simpleholograms.placeholder.Placeholder;
 import eu.virtusdevelops.simpleholograms.placeholder.PlaceholderRegistry;
 import eu.virtusdevelops.simpleholograms.utils.LineUtil;
-import eu.virtusdevelops.virtuscore.utils.HexUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,41 +46,45 @@ public class Hologram {
         this.range = range;
 
 
+
+        double y = 0;
         for(String line: lines){
             int id = 35000 + random.nextInt(2000000000);
-            int refresh = LineUtil.Companion.containsPlaceholders(line);
+            int refresh = LineUtil.containsPlaceholders(line);
             if(refresh != -1){
-                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
+                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh, location, y));
             }else{
-                normalHologramLines.add(new NormalHologramLine(line, id));
+                normalHologramLines.add(new NormalHologramLine(line, id, location, y));
             }
             ids.add(id);
+            y = y - 0.25;
         }
         startTask();
     }
 
     public void refresh(){
 
-        viewers.forEach((player, aBoolean) -> {
-            destroy(player);
-        });
+        viewers.forEach((player, aBoolean) -> destroy(player));
 
         task.cancel();
         ids.clear();
         dynamicHologramLines.clear();
+        normalHologramLines.clear();
 
+        double y = 0;
         for(String line: lines){
-            int id = random.nextInt();
+            int id = 35000 + random.nextInt(2000000000);
             int refresh = LineUtil.Companion.containsPlaceholders(line);
             if(refresh != -1){
-                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh));
+                dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh, location, y));
+            }else{
+                normalHologramLines.add(new NormalHologramLine(line, id, location, y));
             }
+            y = y - 0.25;
             ids.add(id);
         }
 
-        viewers.forEach((player, aBoolean) -> {
-            construct(player);
-        });
+        viewers.forEach((player, aBoolean) -> construct(player));
 
         startTask();
 
@@ -98,12 +101,10 @@ public class Hologram {
 
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
 
-
             for (Map.Entry<Player, Boolean> playerBooleanEntry : viewers.entrySet()) {
 
-                Map.Entry pair = playerBooleanEntry;
-                Player player = (Player) pair.getKey();
-                Boolean isAlive = (Boolean) pair.getValue();
+                Player player = playerBooleanEntry.getKey();
+                Boolean isAlive = playerBooleanEntry.getValue();
 
                 if (player == null || !player.isOnline()) {
                     viewers.remove(player);
@@ -125,6 +126,7 @@ public class Hologram {
                     viewers.replace(player, false);
                 }
             }
+
             for(DynamicHologramLine line : dynamicHologramLines){
                 line.update(viewers, currentTicks);
             }
@@ -138,26 +140,12 @@ public class Hologram {
 
 
     public void construct(Player player){
-        double y = location.getY();
-        int x = 0;
-
-
-
-        for(int id : ids){
-            Location newLoc = location.clone();
-            newLoc.setY(y);
-            String line = lines.get(x);
-
-            holoPacket.spawnArmorStand(player, id, UUID.randomUUID(), newLoc);
-            holoPacket.updateArmorStandDisplayName(player, id, HexUtil.colorify(parsePlaceholders(line, player)));
-            x++;
-            y-=0.25;
-        }
-
         for(NormalHologramLine line : normalHologramLines){
-            line.update(player);
+            line.construct(player);
         }
-
+        for(DynamicHologramLine line: dynamicHologramLines){
+            line.construct(player);
+        }
         viewers.put(player, true);
 
     }
@@ -179,6 +167,12 @@ public class Hologram {
             holoPacket.destroyEntity(player, id);
         }
         viewers.put(player, false);
+    }
+
+    public void forceDestroy(Player player){
+        for(int id : ids){
+            holoPacket.destroyEntity(player, id);
+        }
     }
 
     public void destroyLine(Player player, int lineId){
@@ -206,7 +200,7 @@ public class Hologram {
         this.task.cancel();
         this.task = null;
         viewers.forEach((player, aBoolean) -> {
-            destroy(player);
+            forceDestroy(player);
         });
         viewers.clear();
         holoPacket = null;

@@ -9,6 +9,7 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
 
 
     private val holograms: MutableList<Hologram> = mutableListOf()
+    private val hologramsAPI: MutableList<Hologram> = mutableListOf()
     private val hologramTemplates: MutableList<HologramTemplate> = mutableListOf()
 
     fun getTemplates(): MutableList<HologramTemplate>{
@@ -28,6 +29,48 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
             holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, hologramTemplate.range))
         }
     }
+
+
+    /**
+     * API VERSION OF
+     * HOLOGRAMS.
+     */
+
+    fun addHologramAPI(template: HologramTemplate): Hologram{
+        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range)
+        hologramsAPI.add(hologram)
+        return hologram
+    }
+    fun removeHologramAPI(name: String){
+        hologramsAPI.asSequence().forEach {
+            if(it.name == name){
+                it.destroyClass()
+                holograms.remove(it)
+                return
+            }
+        }
+    }
+    fun getHologramByIDAPI(id: Int): Hologram?{
+        hologramsAPI.asSequence().forEach {
+            if(it.ids.contains(id)){
+                return it
+            }
+        }
+        return null
+    }
+    fun getHologramAPI(hologram: String): Hologram?{
+        hologramsAPI.asSequence().forEach {
+            if(it.name == hologram){
+                return it
+            }
+        }
+        return null
+    }
+
+
+    /**
+     * DEFAULT FUNCTIONS
+     */
 
     fun addHologram(hologram: Hologram): Hologram{
         holograms.add(hologram)

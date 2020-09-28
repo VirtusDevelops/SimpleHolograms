@@ -55,7 +55,7 @@ public class SimpleHologramsAPI {
      * @return Returns hologram that it created.
      */
     public static Hologram createHologram(String name, int range, Location location, List<String> lines){
-        return SimpleHolograms.getHologramRegistryAPI().addHologram(new HologramTemplate(lines, name, range, "", location));
+        return SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location));
     }
 
     /**
@@ -69,7 +69,7 @@ public class SimpleHologramsAPI {
      * @param viewers List of players that can see hologram.
      */
     public static void createHologram(String name, int range, Location location, List<String> lines, List<Player> viewers){
-        SimpleHolograms.getHologramRegistryAPI().addHologram(new HologramTemplate(lines, name, range, "", location));
+        SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location));
         registerViewers(name, viewers);
     }
 
@@ -80,7 +80,7 @@ public class SimpleHologramsAPI {
      * @param viewers Viewers (players) to add to be able to see hologram
      */
     public static void registerViewers(String hologramName, List<Player> viewers){
-        Hologram hologram = SimpleHolograms.getHologramRegistryAPI().getHologram(hologramName);
+        Hologram hologram = SimpleHolograms.getHologramRegistryAPI().getHologramAPI(hologramName);
         if(hologram != null) {
             for (Player viewer : viewers) {
                 hologram.register(viewer);
@@ -95,7 +95,7 @@ public class SimpleHologramsAPI {
      * @param viewers Viewers (players) to add to be able to see hologram
      */
     public static void registerViewers(String hologramName, Player...viewers){
-        Hologram hologram = SimpleHolograms.getHologramRegistryAPI().getHologram(hologramName);
+        Hologram hologram = SimpleHolograms.getHologramRegistryAPI().getHologramAPI(hologramName);
         if(hologram != null) {
             for (Player viewer : viewers) {
                 hologram.register(viewer);
@@ -110,7 +110,11 @@ public class SimpleHologramsAPI {
      * @param viewer - Viewer/Player you wish not to see hologram anymore
      */
     public static void removeViewer(String hologramName, Player viewer){
-        SimpleHolograms.getHologramRegistryAPI().unregister(viewer, hologramName);
+        Hologram hologram = SimpleHolograms.getHologramRegistryAPI().getHologramAPI(hologramName);
+        if(hologram != null) {
+            hologram.unregister(viewer);
+        }
+        //SimpleHolograms.getHologramRegistryAPI().unregister(viewer, hologramName);
     }
 
     /**

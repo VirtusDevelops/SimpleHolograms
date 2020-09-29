@@ -35,7 +35,7 @@ public class Hologram {
 
 
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public Hologram(SimpleHolograms plugin, String name, List<String> lines, Location location, int range){
         this.name = name;
@@ -187,7 +187,7 @@ public class Hologram {
     public void unregister(Player player){
 
         viewers.remove(player);
-        destroy(player);
+        forceDestroy(player);
     }
 
 

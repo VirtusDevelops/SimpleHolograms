@@ -21,7 +21,7 @@ public class SimpleHologramsAPI {
      * @return Returns the Hologram.class
      */
     public static Hologram getHologram(String name){
-        return SimpleHolograms.getHologramRegistryAPI().getHologram(name);
+        return SimpleHolograms.getHologramRegistryAPI().getHologramAPI(name);
     }
 
     /**
@@ -30,8 +30,18 @@ public class SimpleHologramsAPI {
      * @param id id of hologram
      * @return returns null or Hologram if exists
      */
-    public static Hologram getHologramById(int id){
+    public static Hologram getNativeHologramById(int id){
         return SimpleHolograms.getHologramRegistryAPI().getHologramByID(id);
+    }
+
+    /**
+     * Get any hologram created by plugin itself (not thru API), returns null if no holoram is found.
+     *
+     * @param name name of hologram.
+     * @return returns Hologram - null.
+     */
+    public static Hologram getNativeHologram(String name){
+        return SimpleHolograms.getHologramRegistryAPI().getHologram(name);
     }
 
     /**
@@ -40,6 +50,16 @@ public class SimpleHologramsAPI {
      * @param name Hologram name you wish to remove
      */
     public static void removeHologram(String name){
+        SimpleHolograms.getHologramRegistryAPI().removeHologramAPI(name);
+    }
+
+
+    /**
+     *  Remove any hologram by its name. (NATIVE)
+     *
+     * @param name Hologram name you wish to remove
+     */
+    public static void removeNativeHologram(String name){
         SimpleHolograms.getHologramRegistryAPI().removeHologram(name);
     }
 

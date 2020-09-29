@@ -22,7 +22,7 @@ plugins {
 
 
 group 'eu.virtusdevelops'
-version '1.0'
+version '1.0.1'
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven-publish'

@@ -1,6 +1,9 @@
 name: SimpleHolograms
 main: eu.virtusdevelops.simpleholograms.SimpleHolograms
-version: "TEST"
+version: "@version@"
+
+softdepend:
+  - PlaceholderAPI
 
 
 commands:

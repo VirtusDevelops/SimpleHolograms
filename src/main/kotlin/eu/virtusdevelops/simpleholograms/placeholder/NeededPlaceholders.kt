@@ -10,28 +10,28 @@ class NeededPlaceholders(simpleHolograms: SimpleHolograms) {
                 simpleHolograms,
                 "{SLOW}",
                 10.0,
-                TimedPlaceholdersUpdater(mutableListOf("", ""))
+                TimedPlaceholdersUpdater(listOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 simpleHolograms,
                 "{SLOWISH}",
                 5.0,
-                TimedPlaceholdersUpdater(mutableListOf("", ""))
+                TimedPlaceholdersUpdater(listOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 simpleHolograms,
                 "{MEDIUM}",
                 1.0,
-                TimedPlaceholdersUpdater(mutableListOf("", ""))
+                TimedPlaceholdersUpdater(listOf("", ""))
         ))
 
         PlaceholderRegistry.registerPlaceholder(Placeholder(
                 simpleHolograms,
                 "{FAST}",
                 0.1,
-                TimedPlaceholdersUpdater(mutableListOf("", ""))
+                TimedPlaceholdersUpdater(listOf("", ""))
         ))
     }
 

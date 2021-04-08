@@ -1,9 +1,10 @@
 package eu.virtusdevelops.simpleholograms
 
+import eu.virtusdevelops.simplehologram.utils.Metrics
 import eu.virtusdevelops.simpleholograms.commands.*
 import eu.virtusdevelops.simpleholograms.hologram.HologramRegistry
 import eu.virtusdevelops.simpleholograms.hologram.HologramStorage
-import eu.virtusdevelops.simpleholograms.listeners.PlayerJoinEvent
+import eu.virtusdevelops.simpleholograms.listeners.HologramPlayerRegistrar
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import eu.virtusdevelops.simpleholograms.placeholder.NeededPlaceholders
 import eu.virtusdevelops.simpleholograms.placeholder.PlaceholderManager
@@ -11,6 +12,7 @@ import eu.virtusdevelops.virtuscore.VirtusCore
 import eu.virtusdevelops.virtuscore.command.CommandManager
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.FileLocation
+import eu.virtusdevelops.virtuscore.utils.HexUtil
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -47,10 +49,12 @@ class SimpleHolograms: JavaPlugin() {
         hologramRegistry.loadHolograms() // loads holograms from templates
 
 
-        pm.registerEvents(PlayerJoinEvent(this, hologramRegistry), this)
+        pm.registerEvents(HologramPlayerRegistrar(this, hologramRegistry), this)
 
 
         registerCommands()
+
+        Metrics(this, 10587)
     }
 
     override fun onDisable() {
@@ -66,8 +70,9 @@ class SimpleHolograms: JavaPlugin() {
                 RemoveLineCommand(this, fileManager, hologramRegistry),
                 SetLineCommand(this, fileManager, hologramRegistry),
                 AddLineCommand(this, fileManager, hologramRegistry),
-                MoveHereCommand(this, fileManager, hologramRegistry)
-        ).setHeader("${ChatColor.DARK_RED}Coded with love by VirtusDevelops.")
+                MoveHereCommand(this, fileManager, hologramRegistry),
+                AddItemLineCommand(this, fileManager, hologramRegistry)
+        ).setHeader(HexUtil.colorify("&cCoded with love by VirtusDevelops."))
     }
 
     companion object {

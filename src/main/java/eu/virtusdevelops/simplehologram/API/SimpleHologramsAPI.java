@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleHologramsAPI {
@@ -75,7 +76,10 @@ public class SimpleHologramsAPI {
      * @return Returns hologram that it created.
      */
     public static Hologram createHologram(String name, int range, Location location, List<String> lines){
-        return SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location));
+        eu.virtusdevelops.simpleholograms.hologram.Location location1 = new eu.virtusdevelops.simpleholograms.hologram.Location(
+                location.getX(), location.getY(), location.getZ(), location.getWorld().getName()
+        );
+        return SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location1, new ArrayList<>()));
     }
 
     /**
@@ -89,7 +93,10 @@ public class SimpleHologramsAPI {
      * @param viewers List of players that can see hologram.
      */
     public static void createHologram(String name, int range, Location location, List<String> lines, List<Player> viewers){
-        SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location));
+        eu.virtusdevelops.simpleholograms.hologram.Location location1 = new eu.virtusdevelops.simpleholograms.hologram.Location(
+                location.getX(), location.getY(), location.getZ(), location.getWorld().getName()
+        );
+        SimpleHolograms.getHologramRegistryAPI().addHologramAPI(new HologramTemplate(lines, name, range, "", location1, new ArrayList<>()));
         registerViewers(name, viewers);
     }
 

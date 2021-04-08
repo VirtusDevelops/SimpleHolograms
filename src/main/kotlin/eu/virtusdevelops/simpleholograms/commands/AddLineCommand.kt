@@ -17,6 +17,9 @@ class AddLineCommand(private var plugin: SimpleHolograms, val fileManager: FileM
             if(hologram != null && args.size > 1){
                 val configuration = fileManager.getConfiguration("holograms")
                 hologram.addLine(args.copyOfRange(1, args.size).joinToString(" "))
+                // TODO: Add item parse from command.
+
+
                 hologram.refresh()
                 configuration.set("${hologram.name}.lines", hologram.lines.toList())
                 fileManager.saveFile("holograms.yml")

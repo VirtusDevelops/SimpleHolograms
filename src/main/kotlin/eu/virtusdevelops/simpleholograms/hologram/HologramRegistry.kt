@@ -26,7 +26,7 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
 
     fun loadHolograms(){
         for(hologramTemplate in hologramTemplates){
-            holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, hologramTemplate.range))
+            holograms.add(Hologram(plugin,hologramTemplate.name, hologramTemplate.lines, hologramTemplate.location, hologramTemplate.range, hologramTemplate.requirements))
         }
     }
 
@@ -37,7 +37,7 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
      */
 
     fun addHologramAPI(template: HologramTemplate): Hologram{
-        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range)
+        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range, template.requirements)
         hologramsAPI.add(hologram)
         return hologram
     }
@@ -78,7 +78,7 @@ class HologramRegistry(private var plugin: SimpleHolograms) {
     }
 
     fun addHologram(template: HologramTemplate): Hologram{
-        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range)
+        val hologram = Hologram(plugin,template.name, template.lines, template.location, template.range, template.requirements)
         holograms.add(hologram)
         return hologram
     }

@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 
-class PlayerJoinEvent(private val plugin: SimpleHolograms, private val hologramRegistry: HologramRegistry) : Listener {
+class HologramPlayerRegistrar(private val plugin: SimpleHolograms, private val hologramRegistry: HologramRegistry) : Listener {
 
     @EventHandler
     fun onPlayerJoin(event: org.bukkit.event.player.PlayerJoinEvent){

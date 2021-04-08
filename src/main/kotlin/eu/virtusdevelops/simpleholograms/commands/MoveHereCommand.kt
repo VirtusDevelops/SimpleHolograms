@@ -2,6 +2,7 @@ package eu.virtusdevelops.simpleholograms.commands
 
 import eu.virtusdevelops.simpleholograms.SimpleHolograms
 import eu.virtusdevelops.simpleholograms.hologram.HologramRegistry
+import eu.virtusdevelops.simpleholograms.hologram.Location
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.HexUtil
@@ -16,11 +17,20 @@ class MoveHereCommand(private var plugin: SimpleHolograms, val fileManager: File
             val hologram = hologramRegistry.getHologram(args[0].toString())
             if(hologram != null){
                 val position = sender.location
-                hologram.location = position;
-                hologram.refresh()
-                val configuration = fileManager.getConfiguration("holograms")
-                configuration.set("${hologram.name}.location", position)
-                fileManager.saveFile("holograms.yml")
+
+                if(position.world != null) {
+                    hologram.location = Location(position.x, position.y, position.z, position.world!!.name)
+                    hologram.refresh()
+                    val configuration = fileManager.getConfiguration("holograms")
+
+                    configuration.set("${hologram.name}.location.x", position.x)
+                    configuration.set("${hologram.name}.location.y", position.y)
+                    configuration.set("${hologram.name}.location.z", position.z)
+                    configuration.set("${hologram.name}.location.world", position.world!!.name)
+
+
+                    fileManager.saveFile("holograms.yml")
+                }
                 return ReturnType.SUCCESS
 
             }else{

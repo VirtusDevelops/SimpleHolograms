@@ -2,14 +2,15 @@ package eu.virtusdevelops.simplehologram.hologram;
 
 import eu.virtusdevelops.simpleholograms.SimpleHolograms;
 import eu.virtusdevelops.simpleholograms.hologram.DynamicHologramLine;
+import eu.virtusdevelops.simpleholograms.hologram.ItemHologramLine;
+import eu.virtusdevelops.simpleholograms.hologram.Location;
 import eu.virtusdevelops.simpleholograms.hologram.NormalHologramLine;
+import eu.virtusdevelops.simpleholograms.hologram.requirements.Requirement;
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket;
-import eu.virtusdevelops.simpleholograms.placeholder.Placeholder;
-import eu.virtusdevelops.simpleholograms.placeholder.PlaceholderRegistry;
 import eu.virtusdevelops.simpleholograms.utils.LineUtil;
-import me.clip.placeholderapi.PlaceholderAPI;
+import eu.virtusdevelops.virtuscore.utils.ItemUtils;
+import net.minecraft.server.v1_16_R1.ItemLiquidUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -20,7 +21,7 @@ public class Hologram {
     private List<String> lines;
     private Location location;
     private int distance;
-    private int range = 10;
+    private int range;
     private SimpleHolograms plugin;
     private BukkitTask task;
 
@@ -28,7 +29,10 @@ public class Hologram {
     private List<Integer> ids = new ArrayList<>();
     private List<DynamicHologramLine> dynamicHologramLines = new ArrayList<>();
     private List<NormalHologramLine> normalHologramLines = new ArrayList<>();
+    private List<ItemHologramLine> itemLines = new ArrayList<>();
+    private List<Requirement> requirements;
     private Map<Player, Boolean> viewers = new HashMap<>();
+
 
     private HoloPacket holoPacket = HoloPacket.Companion.getINSTANCE();
     private Long currentTicks = 0L;
@@ -37,13 +41,15 @@ public class Hologram {
 
     private final Random random = new Random();
 
-    public Hologram(SimpleHolograms plugin, String name, List<String> lines, Location location, int range){
+    public Hologram(SimpleHolograms plugin, String name, List<String> lines, Location location, int range,
+                    List<Requirement> requirements){
         this.name = name;
         this.lines = lines;
         this.location = location;
         this.distance = range;
         this.plugin = plugin;
         this.range = range;
+        this.requirements = requirements;
 
 
 
@@ -53,7 +59,10 @@ public class Hologram {
             int refresh = LineUtil.containsPlaceholders(line);
             if(refresh != -1){
                 dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh, location, y));
-            }else{
+            }else if(line.startsWith("item:")){
+                itemLines.add(new ItemHologramLine(ItemUtils.decodeItem(line.substring(5)), id, location, y+1.05));
+                y = y - 0.2;
+            } else{
                 normalHologramLines.add(new NormalHologramLine(line, id, location, y));
             }
             ids.add(id);
@@ -70,6 +79,7 @@ public class Hologram {
         ids.clear();
         dynamicHologramLines.clear();
         normalHologramLines.clear();
+        itemLines.clear();
 
         double y = 0;
         for(String line: lines){
@@ -77,14 +87,23 @@ public class Hologram {
             int refresh = LineUtil.Companion.containsPlaceholders(line);
             if(refresh != -1){
                 dynamicHologramLines.add(new DynamicHologramLine(line, id, refresh, location, y));
-            }else{
+            }else if(line.startsWith("item:")){
+                itemLines.add(new ItemHologramLine(ItemUtils.decodeItem(line.substring(5)), id, location, y+1.05));
+                y = y - 0.2;
+            } else{
                 normalHologramLines.add(new NormalHologramLine(line, id, location, y));
             }
             y = y - 0.25;
             ids.add(id);
         }
 
-        viewers.forEach((player, aBoolean) -> construct(player));
+        viewers.forEach((player, aBoolean) -> {
+            boolean doShow = true;
+            for (Requirement req : requirements) {
+                if(!req.meetsRequirement(player)) doShow = false;
+            }
+            if(doShow) construct(player);
+        });
 
         startTask();
 
@@ -99,6 +118,8 @@ public class Hologram {
 
     public void startTask(){
 
+
+
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
 
             for (Map.Entry<Player, Boolean> playerBooleanEntry : viewers.entrySet()) {
@@ -106,15 +127,29 @@ public class Hologram {
                 Player player = playerBooleanEntry.getKey();
                 Boolean isAlive = playerBooleanEntry.getValue();
 
+                boolean doShow = true;
+
+
                 if (player == null || !player.isOnline()) {
                     viewers.remove(player);
-                } else if (player.getWorld() == location.getWorld()) {
-                    double distance = player.getLocation().distanceSquared(location);
-                    if (distance <= range * range) {
-                        if (!isAlive) {
+                } else if (player.getWorld().getName().equals(location.getWorld())) {
+                    double distance = location.getDistance(player.getLocation());
+                    if (distance <= (range * range)) {
+
+//                        if(currentTicks % 5L == 0L) {
+                            for (Requirement req : requirements) {
+                                if (!req.meetsRequirement(player)){ doShow = false; break;}
+                            }
+//                        }
+
+                        if (!isAlive && doShow) {
                             construct(player);
                             viewers.replace(player, true);
+                        }else if(!doShow){
+                            destroy(player);
+                            viewers.replace(player, false);
                         }
+
                     } else {
                         if (isAlive) {
                             destroy(player);
@@ -140,25 +175,26 @@ public class Hologram {
 
 
     public void construct(Player player){
-        for(NormalHologramLine line : normalHologramLines){
-            line.construct(player);
+        boolean doShow = true;
+        for (Requirement req : requirements) {
+            if(!req.meetsRequirement(player)) doShow = false;
         }
-        for(DynamicHologramLine line: dynamicHologramLines){
-            line.construct(player);
+        if(doShow) {
+
+            for (NormalHologramLine line : normalHologramLines) {
+                line.construct(player);
+            }
+            for (DynamicHologramLine line : dynamicHologramLines) {
+                line.construct(player);
+            }
+            for(ItemHologramLine line: itemLines){
+                line.construct(player);
+            }
+            viewers.put(player, true);
         }
-        viewers.put(player, true);
 
     }
 
-    public String parsePlaceholders(String line, Player player){
-        line = PlaceholderAPI.setPlaceholders(player, line);
-
-        for(Placeholder placeholder : PlaceholderRegistry.Companion.getPlaceholders()){
-            line = line.replace(placeholder.getTextPlaceholder(), placeholder.getCurrentReplacement());
-        }
-
-        return line;
-    }
 
 
 

@@ -2,7 +2,7 @@ package eu.virtusdevelops.simpleholograms.nms.impl
 
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import net.minecraft.server.v1_14_R1.*
-import org.bukkit.Location
+import eu.virtusdevelops.simpleholograms.hologram.Location
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -102,9 +102,9 @@ class HoloPacket_v1_14_R1 : HoloPacket(){
                 Pair("c", location.x),
                 Pair("d", location.y),
                 Pair("e", location.z),
-                Pair("f", 0),
-                Pair("g", 0),
-                Pair("h", 0),
+                Pair("f", 1),
+                Pair("g", 1),
+                Pair("h", 1),
                 Pair("i", 0),
                 Pair("j", 0),
                 Pair("k", EntityTypes.ARMOR_STAND),
@@ -132,7 +132,18 @@ class HoloPacket_v1_14_R1 : HoloPacket(){
                 Pair("l", 0)
             )
         ) as PacketPlayOutSpawnEntity
+        val packet2 = setPacket(
+            PacketPlayOutEntityVelocity(),
+            mapOf(
+                Pair("a", entityId),
+                Pair("b", 0),
+                Pair("c", 0),
+                Pair("d", 0)
+            )
+        ) as PacketPlayOutEntityVelocity
+
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        player.handle.playerConnection.sendPacket(packet2)
         sendEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
     }
 

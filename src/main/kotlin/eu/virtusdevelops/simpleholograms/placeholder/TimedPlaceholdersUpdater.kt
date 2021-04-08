@@ -2,7 +2,7 @@ package eu.virtusdevelops.simpleholograms.placeholder
 
 import eu.virtusdevelops.simpleholograms.API.PlaceholderReplacer
 
-class TimedPlaceholdersUpdater(private val frames: MutableList<String>) :
+class TimedPlaceholdersUpdater(private val frames: List<String>) :
     PlaceholderReplacer {
 
     private var index : Int = 0
@@ -14,7 +14,7 @@ class TimedPlaceholdersUpdater(private val frames: MutableList<String>) :
         if(index == frames.size - 1){
             index = 0
         }else{
-            index++;
+            index++
         }
         return currentFrame
     }

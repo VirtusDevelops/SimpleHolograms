@@ -3,7 +3,7 @@ package eu.virtusdevelops.simpleholograms.nms.impl
 import com.google.common.base.Optional
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import net.minecraft.server.v1_9_R1.*
-import org.bukkit.Location
+import eu.virtusdevelops.simpleholograms.hologram.Location
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -103,9 +103,9 @@ class HoloPacket_v1_9_R1 : HoloPacket(){
                 Pair("c", location.x),
                 Pair("d", location.y),
                 Pair("e", location.z),
-                Pair("f", 0),
-                Pair("g", 0),
-                Pair("h", 0),
+                Pair("f", 1),
+                Pair("g", 1),
+                Pair("h", 1),
                 Pair("i", 0),
                 Pair("j", 0),
                 Pair("k", 78),

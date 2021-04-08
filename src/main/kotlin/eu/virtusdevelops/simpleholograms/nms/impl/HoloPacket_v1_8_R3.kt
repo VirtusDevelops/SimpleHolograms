@@ -1,8 +1,10 @@
 package eu.virtusdevelops.simpleholograms.nms.impl
 
+import eu.virtusdevelops.simpleholograms.hologram.Location
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import net.minecraft.server.v1_8_R3.*
-import org.bukkit.Location
+import net.minecraft.server.v1_9_R1.DataWatcherObject
+import net.minecraft.server.v1_9_R1.DataWatcherRegistry
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -40,6 +42,7 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
     }
 
     override fun getMetaEntityGravity(noGravity: Boolean): Any {
+        //return DataWatcher.b(DataWatcherObject(5, DataWatcherRegistry.h), noGravity)
         TODO()
     }
 
@@ -71,7 +74,6 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
 
     override fun initArmorStandAsHologram(player: Player, entityId: Int) {
         sendEntityMetadata(player, entityId,
-            getMetaEntityGravity(false),
             getMetaEntityCustomNameVisible(true),
             getMetaEntitySilenced(true),
             getMetaEntityProperties(false, false, true, false, true, false, false),
@@ -96,17 +98,10 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
         val packet = setPacket(PacketPlayOutSpawnEntity(),
             mapOf(
                 Pair("a", entityId),
-                Pair("b", uuid),
-                Pair("c", location.x),
-                Pair("d", location.y),
-                Pair("e", location.z),
-                Pair("f", 0),
-                Pair("g", 0),
-                Pair("h", 0),
-                Pair("i", 0),
-                Pair("j", 0),
-                Pair("k", 78),
-                Pair("l", 0)
+                Pair("b", MathHelper.floor(location.x * 32.0)),
+                Pair("c", MathHelper.floor(location.y * 32.0)),
+                Pair("d", MathHelper.floor(location.z * 32.0)),
+                Pair("j", 78)
             )
         ) as PacketPlayOutSpawnEntity
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
@@ -117,21 +112,15 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
         val packet = setPacket(PacketPlayOutSpawnEntity(),
             mapOf(
                 Pair("a", entityId),
-                Pair("b", uuid),
-                Pair("c", location.x),
-                Pair("d", location.y),
-                Pair("e", location.z),
-                Pair("f", 0),
-                Pair("g", 0),
-                Pair("h", 0),
-                Pair("i", 0),
-                Pair("j", 0),
-                Pair("k", 2),
-                Pair("l", 0)
+                Pair("b", MathHelper.floor(location.x * 32.0)),
+                Pair("c", MathHelper.floor(location.y * 32.0)),
+                Pair("d", MathHelper.floor(location.z * 32.0)),
+                Pair("j", 2)
             )
         ) as PacketPlayOutSpawnEntity
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
-        sendEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
+        //sendEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
+        sendEntityMetadata(player, entityId, getMetaEntityItemStack(itemStack))
     }
 
     override fun updateArmorStandDisplayName(player: Player, entityId: Int, name: String) {
@@ -152,9 +141,9 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
         val packet = setPacket(PacketPlayOutEntityTeleport(),
             mapOf(
                 Pair("a", entityId),
-                Pair("b", location.x),
-                Pair("c", location.y),
-                Pair("d", location.z),
+                Pair("b", MathHelper.floor(location.x)),
+                Pair("c", MathHelper.floor(location.y)),
+                Pair("d", MathHelper.floor(location.z)),
                 Pair("e", 0),
                 Pair("f", 0),
                 Pair("g", false)
@@ -167,7 +156,7 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
         val packet = setPacket(PacketPlayOutAttachEntity(),
             mapOf(
                 Pair("a", entityId),
-                Pair("b", passengers)
+                Pair("b", passengers[0])
             )
         ) as PacketPlayOutAttachEntity
 

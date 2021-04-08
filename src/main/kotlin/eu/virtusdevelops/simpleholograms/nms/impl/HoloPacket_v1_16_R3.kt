@@ -3,16 +3,17 @@ package eu.virtusdevelops.simpleholograms.nms.impl
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.chat.ComponentSerializer
-import net.minecraft.server.v1_16_R2.*
+import net.minecraft.server.v1_16_R3.*
 import eu.virtusdevelops.simpleholograms.hologram.Location
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.collections.ArrayList
 
-class HoloPacket_v1_16_R2 : HoloPacket() {
+class HoloPacket_v1_16_R3 : HoloPacket() {
 
     override fun destroyEntity(player: Player, entityId: Int) {
         val packet = PacketPlayOutEntityDestroy(entityId)
@@ -27,23 +28,25 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
                         Pair("c", location.x),
                         Pair("d", location.y),
                         Pair("e", location.z),
-                        Pair("f", 1),
-                        Pair("g", 1),
-                        Pair("h", 1),
+
+                        Pair("f", 1), // Velocity
+                        Pair("g", 1), // Velocity
+                        Pair("h", 1), // Velocity
+
                         Pair("i", 0),
                         Pair("j", 0),
                         Pair("k", EntityTypes.ITEM),
                         Pair("l", 0)
                 )
         ) as PacketPlayOutSpawnEntity
-        val packet2 = setPacket(
-            PacketPlayOutEntityVelocity(),
-            mapOf(
-                Pair("a", entityId),
-                Pair("b", 0),
-                Pair("c", 0),
-                Pair("d", 0)
-            )
+
+        val packet2 = setPacket(PacketPlayOutEntityVelocity(),
+               mapOf(
+                    Pair("a", entityId),
+                    Pair("b", 0),
+                    Pair("c", 0),
+                    Pair("d", 0)
+               )
         ) as PacketPlayOutEntityVelocity
 
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
@@ -147,7 +150,7 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
     }
 
     override fun sendEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
-        val items: MutableList<DataWatcher.Item<*>> = mutableListOf()
+        val items: MutableList<DataWatcher.Item<*>> = ArrayList()
         for (obj in objects) {
             items.add(obj as DataWatcher.Item<*>)
         }

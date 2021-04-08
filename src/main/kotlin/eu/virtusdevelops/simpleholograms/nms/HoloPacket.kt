@@ -2,8 +2,8 @@ package eu.virtusdevelops.simpleholograms.nms
 
 import eu.virtusdevelops.simpleholograms.nms.impl.*
 import eu.virtusdevelops.virtuscore.VirtusCore
-import eu.virtusdevelops.virtuscore.utils.NMSUtil
-import org.bukkit.Location
+import eu.virtusdevelops.virtuscore.utils.NMSUtils
+import eu.virtusdevelops.simpleholograms.hologram.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -38,8 +38,11 @@ abstract class HoloPacket {
 
         init {
             // Add all NMS
-            VirtusCore.console().sendMessage(NMSUtil.getServerVersion())
-            when(NMSUtil.getServerVersion()){
+            VirtusCore.console().sendMessage(NMSUtils.getServerVersion())
+            when(NMSUtils.getServerVersion()){
+                "v1_16_R3." -> {
+                    INSTANCE = HoloPacket_v1_16_R3()
+                }
                 "v1_16_R2." -> {
                     INSTANCE = HoloPacket_v1_16_R2()
                 }
@@ -76,9 +79,6 @@ abstract class HoloPacket {
                 "v1_8_R3." -> {
                     INSTANCE = HoloPacket_v1_8_R3()
                 }
-
-
-
             }
             if(INSTANCE == null){
                 VirtusCore.console().sendMessage("Could not find correct NMS disabling plugin (check if plugin is compatible with your server)")

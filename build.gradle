@@ -24,7 +24,7 @@ plugins {
 
 
 group 'eu.virtusdevelops'
-version '1.0.7 DEV'
+version '1.0.8 DEV'
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven-publish'
@@ -66,7 +66,7 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compileOnly fileTree(dir: 'libs', include: '*.jar')
+    compileOnly fileTree(dir: 'libs_new', include: '*.jar')
     compile fileTree(dir: 'included', include: '*.jar')
 }
 

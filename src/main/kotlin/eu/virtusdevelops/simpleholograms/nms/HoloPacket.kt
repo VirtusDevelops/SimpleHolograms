@@ -40,6 +40,9 @@ abstract class HoloPacket {
             // Add all NMS
             VirtusCore.console().sendMessage(NMSUtils.getServerVersion())
             when(NMSUtils.getServerVersion()){
+                "v1_17_R1." -> {
+                    INSTANCE = HoloPacket_v1_17_R1()
+                }
                 "v1_16_R3." -> {
                     INSTANCE = HoloPacket_v1_16_R3()
                 }

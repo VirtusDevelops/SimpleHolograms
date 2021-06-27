@@ -2,9 +2,8 @@ package eu.virtusdevelops.simpleholograms.nms.impl
 
 import eu.virtusdevelops.simpleholograms.hologram.Location
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
+import net.minecraft.server.v1_8_R3.Packet
 import net.minecraft.server.v1_8_R3.*
-import net.minecraft.server.v1_9_R1.DataWatcherObject
-import net.minecraft.server.v1_9_R1.DataWatcherRegistry
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -161,6 +160,22 @@ class HoloPacket_v1_8_R3 : HoloPacket(){
         ) as PacketPlayOutAttachEntity
 
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
+    }
+
+
+    override fun sendPacket(players: List<Player>, packet: Any) {
+        packet as Packet<*>?
+        for( pl in players){
+            (pl as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        }
+    }
+
+    override fun sendPacket(players: List<Player>, packets: List<Any>) {
+        for( pl in players){
+            for(packet in packets){
+                (pl as CraftPlayer).handle.playerConnection.sendPacket(packet as Packet<*>?)
+            }
+        }
     }
 
 }

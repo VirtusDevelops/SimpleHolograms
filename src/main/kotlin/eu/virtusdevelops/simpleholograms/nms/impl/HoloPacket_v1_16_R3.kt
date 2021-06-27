@@ -195,6 +195,21 @@ class HoloPacket_v1_16_R3 : HoloPacket() {
         )
     }
 
+    override fun sendPacket(players: List<Player>, packet: Any) {
+        packet as Packet<*>?
+        for( pl in players){
+            (pl as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        }
+    }
+
+    override fun sendPacket(players: List<Player>, packets: List<Any>) {
+        for( pl in players){
+            for(packet in packets){
+                (pl as CraftPlayer).handle.playerConnection.sendPacket(packet as Packet<*>?)
+            }
+        }
+    }
+
 
 
 

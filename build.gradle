@@ -2,14 +2,14 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
     repositories {
-//        maven {
-//            url artifactory_contextUrl
-//            credentials {
-//                username = artifactory_user
-//                password = artifactory_password
-//            }
-//            name = "maven-main-cache"
-//        }
+        maven {
+            url artifactory_contextUrl
+            credentials {
+                username = nexusUser
+                password = nexusPassword
+            }
+            name = "maven-main-cache"
+        }
     }
 }
 
@@ -43,13 +43,13 @@ repositories {
 
     maven { url "https://repo.dmulloy2.net/nexus/repository/public/" }
 
-//    maven {
-//        url = 'http://nexus.virtusdevelops.eu/repository/maven-releases/'
-//        credentials {
-//            username = artifactory_user
-//            password = artifactory_password
-//        }
-//    }
+    maven {
+        url = 'https://nexus.virtusdevelops.eu/repository/maven-releases/'
+        credentials {
+            username = nexusUser
+            password = nexusPassword
+        }
+    }
 
     maven { url 'https://jitpack.io' }
     mavenLocal()
@@ -57,17 +57,17 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-//    compile group: 'eu.virtusdevelops', name: 'VirtusCore', version:'1.0.7.8.2'
+    compile group: 'eu.virtusdevelops', name: 'VirtusCore', version:'1.0.8.3'
     compileOnly group: 'org.spigotmc', name: 'spigot', version: '1.16.2-R0.1-SNAPSHOT'
     compileOnly group: 'org.spigotmc', name: 'spigot', version: '1.15.2-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.9'
 
-//    compileOnly group: 'eu.virtusdevelops', name: 'spigotnms', version:'1.16.2.1'
+//    compileOnly group: 'eu.virtusdevelops', name: 'spigotnms', version:'1.17.1'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     compileOnly fileTree(dir: 'libs_new', include: '*.jar')
-    compile fileTree(dir: 'included', include: '*.jar')
+//    compile fileTree(dir: 'included', include: '*.jar')
 }
 
 shadowJar {

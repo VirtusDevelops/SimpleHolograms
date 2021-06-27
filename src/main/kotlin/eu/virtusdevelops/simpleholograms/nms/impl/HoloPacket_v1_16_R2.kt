@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.chat.ComponentSerializer
 import net.minecraft.server.v1_16_R2.*
 import eu.virtusdevelops.simpleholograms.hologram.Location
+import net.minecraft.server.v1_16_R2.Packet
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -192,7 +193,20 @@ class HoloPacket_v1_16_R2 : HoloPacket() {
         )
     }
 
+    override fun sendPacket(players: List<Player>, packet: Any) {
+        packet as Packet<*>?
+        for( pl in players){
+            (pl as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        }
+    }
 
+    override fun sendPacket(players: List<Player>, packets: List<Any>) {
+        for( pl in players){
+            for(packet in packets){
+                (pl as CraftPlayer).handle.playerConnection.sendPacket(packet as Packet<*>?)
+            }
+        }
+    }
 
 
 

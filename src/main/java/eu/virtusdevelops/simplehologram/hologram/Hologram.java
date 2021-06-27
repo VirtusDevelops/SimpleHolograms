@@ -9,7 +9,6 @@ import eu.virtusdevelops.simpleholograms.hologram.requirements.Requirement;
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket;
 import eu.virtusdevelops.simpleholograms.utils.LineUtil;
 import eu.virtusdevelops.virtuscore.utils.ItemUtils;
-import net.minecraft.server.v1_16_R1.ItemLiquidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;

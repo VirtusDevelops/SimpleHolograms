@@ -10,15 +10,15 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 
 abstract class HoloPacket {
-    abstract fun spawnArmorStand(player: Player, entityId: Int, uuid: UUID, location: Location)
-    abstract fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack)
-    abstract fun destroyEntity(player: Player, entityId: Int)
-    abstract fun initArmorStandAsHologram(player: Player, entityId: Int)
-    abstract fun updateArmorStandDisplayName(player: Player, entityId: Int, name: String)
-    abstract fun updateArmorStandLocation(player: Player, entityId: Int, location: Location)
-    abstract fun updatePassengers(player: Player, entityId: Int, vararg passengers: Int)
-    abstract fun updateArmorStandEquipmentItem(player: Player, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack)
-    abstract fun sendEntityMetadata(player: Player, entityId: Int, vararg objects: Any)
+    abstract fun spawnArmorStand(player: Player, entityId: Int, uuid: UUID, location: Location): Any
+    abstract fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack): Any
+    abstract fun destroyEntity(player: Player, entityId: Int): Any
+    abstract fun initArmorStandAsHologram(player: Player, entityId: Int): Any
+    abstract fun updateArmorStandDisplayName(player: Player, entityId: Int, name: String): Any
+    abstract fun updateArmorStandLocation(player: Player, entityId: Int, location: Location): Any
+    abstract fun updatePassengers(player: Player, entityId: Int, vararg passengers: Int): Any
+    abstract fun updateArmorStandEquipmentItem(player: Player, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack): Any
+    abstract fun sendEntityMetadata(player: Player, entityId: Int, vararg objects: Any): Any
     abstract fun getMetaEntityItemStack(itemStack: ItemStack): Any
     abstract fun getMetaEntityProperties(onFire: Boolean, crouched: Boolean, sprinting: Boolean, swimming: Boolean, invisible: Boolean, glowing: Boolean, flyingElytra: Boolean): Any
     abstract fun getMetaEntityGravity(noGravity: Boolean): Any
@@ -27,6 +27,8 @@ abstract class HoloPacket {
     abstract fun getMetaEntityCustomName(name: String): Any
     abstract fun getMetaArmorStandProperties(isSmall: Boolean, hasArms: Boolean, noBasePlate: Boolean, marker: Boolean): Any
 
+    abstract fun sendPacket(players: List<Player>, packet: Any)
+    abstract fun sendPacket(players: List<Player>, packet: List<Any>)
 
     fun setPacket(packet: Any, sets: Map<String, Any>): Any {
         sets.forEach { (key: String, value: Any) -> packet.updateField(key, value) }
@@ -87,7 +89,6 @@ abstract class HoloPacket {
                 VirtusCore.console().sendMessage("Could not find correct NMS disabling plugin (check if plugin is compatible with your server)")
             }
         }
-
     }
 
     private fun Any.retrieveField(name: String): Any

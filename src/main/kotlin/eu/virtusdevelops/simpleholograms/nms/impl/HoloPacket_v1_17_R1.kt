@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketDataSerializer
 import net.minecraft.network.chat.ChatComponentText
 import net.minecraft.network.chat.IChatBaseComponent
+import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.*
 import net.minecraft.network.syncher.DataWatcher
 import net.minecraft.network.syncher.DataWatcherObject
@@ -195,8 +196,20 @@ class HoloPacket_v1_17_R1 : HoloPacket() {
         )
     }
 
+    override fun sendPacket(players: List<Player>, packet: Any) {
+        packet as Packet<*>?
+        for( pl in players){
+            (pl as CraftPlayer).handle.b.a.sendPacket(packet)
+        }
+    }
 
-
+    override fun sendPacket(players: List<Player>, packets: List<Any>) {
+        for( pl in players){
+            for(packet in packets){
+                (pl as CraftPlayer).handle.b.a.sendPacket(packet as Packet<*>?)
+            }
+        }
+    }
 
 
 }

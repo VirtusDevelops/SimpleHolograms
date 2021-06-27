@@ -4,6 +4,7 @@ import com.google.common.base.Optional
 import eu.virtusdevelops.simpleholograms.nms.HoloPacket
 import net.minecraft.server.v1_10_R1.*
 import eu.virtusdevelops.simpleholograms.hologram.Location
+import net.minecraft.server.v1_10_R1.Packet
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -187,6 +188,21 @@ class HoloPacket_v1_10_R1 : HoloPacket(){
         ) as PacketPlayOutMount
 
         (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
+    }
+
+    override fun sendPacket(players: List<Player>, packet: Any) {
+        packet as Packet<*>?
+        for( pl in players){
+            (pl as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        }
+    }
+
+    override fun sendPacket(players: List<Player>, packets: List<Any>) {
+        for( pl in players){
+            for(packet in packets){
+                (pl as CraftPlayer).handle.playerConnection.sendPacket(packet as Packet<*>?)
+            }
+        }
     }
 
 }

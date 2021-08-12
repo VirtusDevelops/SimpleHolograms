@@ -34,6 +34,9 @@ class CreateCommand(private var plugin: SimpleHolograms, val fileManager: FileMa
             configuration.set("${hologramTemplate.name}.range", hologramTemplate.range)
             configuration.set("${hologramTemplate.name}.permission", hologramTemplate.permission)
             configuration.set("${hologramTemplate.name}.lines", hologramTemplate.lines.toMutableList())
+
+
+
             fileManager.saveFile("holograms.yml")
 
             hologramRegistry.addHologram(Hologram(plugin,

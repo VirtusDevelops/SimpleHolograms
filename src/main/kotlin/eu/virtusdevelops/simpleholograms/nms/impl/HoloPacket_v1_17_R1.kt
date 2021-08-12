@@ -18,6 +18,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.EnumItemSlot
 import net.minecraft.world.phys.Vec3D
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.IntList
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
@@ -29,7 +30,9 @@ import kotlin.collections.ArrayList
 class HoloPacket_v1_17_R1 : HoloPacket() {
 
     override fun destroyEntity(player: Player, entityId: Int) {
-        val packet = PacketPlayOutEntityDestroy(entityId)
+
+        val packet = PacketPlayOutEntityDestroy(entityId, entityId)
+
         (player as CraftPlayer).handle.b.a.sendPacket(packet)
     }
 
